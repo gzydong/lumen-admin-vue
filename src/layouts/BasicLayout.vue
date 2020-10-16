@@ -16,10 +16,12 @@
       </div>
     </template>
 
-    <setting-drawer :settings="settings" @change="handleSettingChange" />
+    <setting-drawer v-if="isShowSetting"  :settings="settings" @change="handleSettingChange" />
+
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
     </template>
+
     <template v-slot:footerRender>
       <global-footer />
     </template>
@@ -36,7 +38,6 @@ import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mu
 import defaultSettings from '@/config/defaultSettings'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import GlobalFooter from '@/components/GlobalFooter'
-import Ads from '@/components/Other/CarbonAds'
 import LogoSvg from '../assets/logo.svg?inline'
 import { asyncRouterMap } from '@/config/router.config.js'
 export default {
@@ -45,8 +46,7 @@ export default {
     SettingDrawer,
     RightContent,
     GlobalFooter,
-    LogoSvg,
-    Ads
+    LogoSvg
   },
   data () {
     return {
@@ -59,6 +59,7 @@ export default {
       // 侧栏收起状态
       collapsed: false,
       title: defaultSettings.title,
+      isShowSetting:false,
       settings: {
         // 布局类型
         layout: defaultSettings.layout, // 'sidemenu', 'topmenu'
@@ -89,7 +90,6 @@ export default {
     })
   },
   created () {
-    // const routes = this.mainMenu.find(item => item.path === '/')
     const routes = asyncRouterMap.find((item) => item.path === '/')
     this.menus = (routes && routes.children) || []
     // 处理侧栏收起状态
@@ -115,6 +115,7 @@ export default {
     // TIPS: THEME COLOR HANDLER!! PLEASE CHECK THAT!!
     if (process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'true') {
       updateTheme(this.settings.primaryColor)
+      this.isShowSetting = true;
     }
   },
   methods: {

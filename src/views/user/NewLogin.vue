@@ -1,16 +1,15 @@
 <template>
-  <div class="bag-body" style="display: flex;align-items: center;justify-content: center;width: 100%;height: 100%;">
+  <div class="fixed-body">
     <div class="login-main">
       <a-row>
-        <a-col :span="12" class="bag"
-          style="display: flex;justify-content: center;align-items: center;flex-direction: column;">
+        <a-col :span="13" class="explain">
           <div class="login-aside-doc">
             <div class="login-aside-title">欢迎来到 LumenCMS</div>
             <div class="login-aside-desc">LumenCMS 是一个极简易开发的后台管理系统。采用了前后端分离开发模式。</div>
           </div>
           <logo-svg />
         </a-col>
-        <a-col :span="12" style="padding: 80px 30px 30px 30px; ">
+        <a-col :span="11" style="padding: 80px 30px 30px 30px; ">
           <div class="login-title">LumenCMS 管理系统</div>
           <div class="login-sub-title">欢迎来到 LumenCMS，请登录！</div>
           <a-form id="formLogin" class="user-layout-login" ref="formLogin" :form="form" @submit="handleSubmit">
@@ -45,7 +44,6 @@
 </template>
 
 <script>
-  import md5 from 'md5'
   import {
     mapActions
   } from 'vuex'
@@ -134,42 +132,46 @@
   }
 </script>
 
-<style lang="less" scoped>
-  .bag-body {
+<style lang="less" scoped type="text/less">
+  .fixed-body {
     width: 100%;
     min-height: 100%;
-    background: #f0f2f5 url(/assets/background.a568162c.svg) no-repeat 50%;
+    height: 100%;
+    background: #f0f2f5 url(~@/assets/background.svg) no-repeat 50%;
     background-size: 100%;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .login-main {
+      height: 560px;
+      max-width: 900px;
+      width: 100%;
+      background: rgba(255, 255, 255, 1);
+      border-radius: 0px 4px 4px 0px;
+      box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
+
+      .login-title {
+        color: rgba(0, 170, 231, 1);
+        font-size: 32px;
+        font-weight: 400;
+        line-height: 48px;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .login-sub-title {
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 22px;
+        margin-bottom: 64px;
+        text-align: center;
+      }
+    }
   }
 
 
-  .login-main {
-    height: 560px;
-    max-width: 900px;
-    width: 100%;
-    background: rgba(255, 255, 255, 1);
-    border-radius: 0px 4px 4px 0px;
-    box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
-
-    .login-title {
-      color: rgba(0, 170, 231, 1);
-      font-size: 32px;
-      font-weight: 400;
-      line-height: 48px;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .login-sub-title {
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 22px;
-      margin-bottom: 64px;
-      text-align: center;
-    }
-  }
 
   .login-aside-doc {
     .login-aside-title {
@@ -192,7 +194,7 @@
     }
   }
 
-  .bag {
+  .explain {
     height: 560px;
     text-align: right;
     padding-left: 0;
@@ -202,6 +204,10 @@
     background-blend-mode: saturation;
     border-radius: 4px 0px 0px 4px;
     box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 
   .user-layout-login {
