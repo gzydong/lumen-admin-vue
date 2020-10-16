@@ -11,7 +11,7 @@
           <logo-svg />
         </a-col>
         <a-col :span="12" style="padding: 80px 30px 30px 30px; ">
-          <div class="login-title">LumenCMS后台管理系统</div>
+          <div class="login-title">LumenCMS 管理系统</div>
           <div class="login-sub-title">欢迎来到 LumenCMS，请登录！</div>
           <a-form id="formLogin" class="user-layout-login" ref="formLogin" :form="form" @submit="handleSubmit">
             <a-form-item>
@@ -90,7 +90,6 @@
           force: true
         }, (err, values) => {
           if (!err) {
-            console.log('login form', values)
             const loginParams = {
               ...values
             }
@@ -113,7 +112,7 @@
       },
       loginSuccess(res) {
         this.$router.push({
-          path: '/dashboard/analysis'
+          name: 'index'
         });
 
         // 延迟 1 秒显示欢迎信息

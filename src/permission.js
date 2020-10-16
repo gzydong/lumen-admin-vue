@@ -23,7 +23,7 @@ const allowList = ['login']; // 免登录白名单
 const loginRoutePath = '/login';
 
 // 登录后默认跳转页面
-const defaultRoutePath = '/dashboard/analysis'
+const defaultRoutePath = '/index';
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
       NProgress.done();
     }
   }
-})
+});
 
 router.afterEach(() => {
   NProgress.done();

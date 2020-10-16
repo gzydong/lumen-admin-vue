@@ -5,15 +5,18 @@ import {
   APP_LANGUAGE,
   TOGGLE_CONTENT_WIDTH,
   TOGGLE_FIXED_HEADER,
-  TOGGLE_FIXED_SIDEBAR, TOGGLE_HIDE_HEADER,
-  TOGGLE_LAYOUT, TOGGLE_NAV_THEME, TOGGLE_WEAK,
-  TOGGLE_COLOR, TOGGLE_MULTI_TAB
+  TOGGLE_FIXED_SIDEBAR,
+  TOGGLE_HIDE_HEADER,
+  TOGGLE_LAYOUT,
+  TOGGLE_NAV_THEME,
+  TOGGLE_WEAK,
+  TOGGLE_COLOR,
+  TOGGLE_MULTI_TAB
 } from '@/store/mutation-types'
-import { printANSI } from '@/utils/screenLog'
+
 import defaultSettings from '@/config/defaultSettings'
 
-export default function Initializer () {
-  printANSI() // 请自行移除该行.  please remove this line
+export default function Initializer() {
 
   store.commit(TOGGLE_LAYOUT, storage.get(TOGGLE_LAYOUT, defaultSettings.layout))
   store.commit(TOGGLE_FIXED_HEADER, storage.get(TOGGLE_FIXED_HEADER, defaultSettings.fixedHeader))
@@ -26,6 +29,6 @@ export default function Initializer () {
   store.commit(TOGGLE_MULTI_TAB, storage.get(TOGGLE_MULTI_TAB, defaultSettings.multiTab))
   store.commit('SET_TOKEN', storage.get(ACCESS_TOKEN))
 
-  store.dispatch('setLang', storage.get(APP_LANGUAGE, 'en-US'))
-  // last step
+  // 初始化设置默认语言
+  store.dispatch('setLang', storage.get(APP_LANGUAGE, 'zh-CN'))
 }

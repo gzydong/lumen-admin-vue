@@ -23,6 +23,15 @@ const locale = {
   'app.setting.pagestyle.dark': '暗色菜单风格',
   'app.setting.pagestyle.realdark': 'RealDark style',
   'app.setting.themecolor': '主题色',
+  'app.setting.themecolor.daybreak': '拂晓篮(默认)',
+  'app.setting.themecolor.dust': 'dust',
+  'app.setting.themecolor.volcano': 'volcano',
+  'app.setting.themecolor.sunset': 'sunset',
+  'app.setting.themecolor.cyan': 'cyan',
+  'app.setting.themecolor.green': 'green',
+  'app.setting.themecolor.geekblue': 'geekblue',
+  'app.setting.themecolor.purple': 'purple',
+
   'app.setting.navigationmode': '导航模式',
   'app.setting.content-width': '内容区域宽度',
   'app.setting.fixedheader': '固定Header',
@@ -34,10 +43,10 @@ const locale = {
   'app.setting.content-width.fluid': '流式',
   'app.setting.othersettings': '其它设置',
   'app.setting.weakmode': '色弱模式',
-  'app.setting.copy': '复制设置',
+  'app.setting.copy': '拷贝设置',
   'app.setting.loading': 'Loading theme',
   'app.setting.copyinfo': '复制成功，请替换defaultSettings 在 src/models/setting.js 文件中',
-  'app.setting.production.hint': '设置面板仅在开发环境中显示，请手动修改'
+  'app.setting.production.hint': '配置栏只在开发环境用于预览，生产环境不会展现，请拷贝后手动修改配置文件'
 }
 
 export default {

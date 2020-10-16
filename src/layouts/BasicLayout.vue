@@ -9,16 +9,6 @@
     :i18nRender="i18nRender"
     v-bind="settings"
   >
-    <!-- Ads begin
-      广告代码 真实项目中请移除
-      production remove this Ads
-    -->
-    <ads v-if="isProPreviewSite && !collapsed"/>
-    <!-- Ads end -->
-
-    <!-- 1.0.0+ 版本 pro-layout 提供 API，
-          我们推荐使用这种方式进行 LOGO 和 title 自定义
-    -->
     <template v-slot:menuHeaderRender>
       <div>
         <logo-svg />
@@ -146,7 +136,6 @@ export default {
       this.collapsed = val
     },
     handleSettingChange ({ type, value }) {
-      console.log('type', type, value)
       type && (this.settings[type] = value)
       switch (type) {
         case 'contentWidth':

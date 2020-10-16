@@ -1,14 +1,17 @@
 import storage from 'store'
-import { login, logout } from '@/api/login'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import {
+  login,
+  logout
+} from '@/api/login'
+import {
+  ACCESS_TOKEN
+} from '@/store/mutation-types'
 
 const user = {
   state: {
     token: '',
     name: '',
-    welcome: '',
     avatar: '',
-    roles: [],
     info: {}
   },
 
@@ -16,15 +19,11 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, { name, welcome }) => {
+    SET_NAME: (state, name) => {
       state.name = name
-      state.welcome = welcome
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
-    },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
     },
     SET_INFO: (state, info) => {
       state.info = info
@@ -33,7 +32,9 @@ const user = {
 
   actions: {
     // 登录
-    Login ({ commit }, userInfo) {
+    Login({
+      commit
+    }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
           const result = res.data
@@ -47,20 +48,25 @@ const user = {
     },
 
     // 登出
-    Logout ({ commit, state }) {
-      return new Promise((resolve) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          storage.remove(ACCESS_TOKEN)
+    Logout({
+      commit,
+      state
+    }) {
+      let func = () => {
+        commit('SET_TOKEN', '')
+        storage.remove(ACCESS_TOKEN)
+      }
+
+      return new Promise((resolve, error) => {
+        logout().then((res) => {
+          func();
           resolve()
         }).catch(() => {
-          resolve()
-        }).finally(() => {
-        })
+          func();
+          reject(error)
+        });
       })
     }
-
   }
 }
 

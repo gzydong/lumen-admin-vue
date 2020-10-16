@@ -56,7 +56,7 @@ export default {
         onOk: () => {
           return this.$store.dispatch('Logout').then(() => {
             this.$router.push({ name: 'login' })
-          })
+          });
         },
         onCancel () {}
       })
