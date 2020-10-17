@@ -1,11 +1,13 @@
-import storage from 'store'
+import storage from 'store';
+
 import {
   login,
   logout
-} from '@/api/login'
+} from '@/api/login';
 import {
-  ACCESS_TOKEN
-} from '@/store/mutation-types'
+  ACCESS_TOKEN,
+  ADMIN_INFO
+} from '@/store/mutation-types';
 
 const user = {
   state: {
@@ -37,13 +39,26 @@ const user = {
     }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
-          const result = res.data
-          storage.set(ACCESS_TOKEN, result.Authentication.access_token, 7 * 24 * 60 * 60 * 1000)
-          commit('SET_TOKEN', result.Authentication.access_token)
-          resolve()
+          if (res.code == 200) {
+            const result = res.data;
+            let adminInfo = res.data.admin_info;
+            let time = 7 * 24 * 60 * 60 * 1000;
+
+            storage.set(ACCESS_TOKEN, result.auth.access_token, time)
+            storage.set(ADMIN_INFO, {
+              username: adminInfo.username,
+              avatar: adminInfo.avatar,
+            }, time);
+
+            commit('SET_NAME', adminInfo.username);
+            commit('SET_AVATAR', adminInfo.avatar);
+            commit('SET_TOKEN', result.auth.access_token)
+          }
+
+          resolve(res)
         }).catch(error => {
           reject(error)
-        })
+        });
       })
     },
 

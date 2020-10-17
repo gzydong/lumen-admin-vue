@@ -1,4 +1,7 @@
-import request from '@/utils/request'
+import {
+  request,
+  post
+} from '@/utils/request';
 
 const userApi = {
   Login: '/auth/login',
@@ -6,25 +9,18 @@ const userApi = {
 }
 
 /**
- * login func
+ * 登录接口
  * 
- * @param parameter
+ * @param data 请求数据
  * @returns {*}
  */
-export function login(parameter) {
-  return request({
-    url: userApi.Login,
-    method: 'post',
-    data: parameter
-  });
+export function login(data) {
+  return post(userApi.Login, data);
 }
 
+/**
+ * 退出登录接口
+ */
 export function logout() {
-  return request({
-    url: userApi.Logout,
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
-  });
+  return post(userApi.Logout);
 }

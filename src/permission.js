@@ -1,7 +1,7 @@
-import router from './router'
-import storage from 'store'
-import NProgress from 'nprogress' // progress bar
-import '@/components/NProgress/nprogress.less' // progress bar custom style
+import router from './router';
+import storage from 'store';
+import NProgress from 'nprogress';
+import '@/components/NProgress/nprogress.less';
 
 import {
   setDocumentTitle,
@@ -11,6 +11,7 @@ import {
 import {
   ACCESS_TOKEN
 } from '@/store/mutation-types';
+
 import {
   i18nRender
 } from '@/locales';
@@ -19,15 +20,19 @@ NProgress.configure({
   showSpinner: false
 });
 
-const allowList = ['login']; // 免登录白名单
+// 免登录白名单
+const allowList = ['login'];
+
+// 登录页面地址
 const loginRoutePath = '/login';
 
 // 登录后默认跳转页面
 const defaultRoutePath = '/index';
 
 router.beforeEach((to, from, next) => {
-  NProgress.start() // start progress bar
-  to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`))
+  NProgress.start();
+
+  to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`));
 
   // 判断是否登录
   if (storage.get(ACCESS_TOKEN)) {
@@ -50,4 +55,4 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(() => {
   NProgress.done();
-})
+});

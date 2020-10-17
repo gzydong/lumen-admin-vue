@@ -2,17 +2,18 @@
   <div class="fixed-body">
     <div class="login-main">
       <a-row>
-        <a-col :span="13" class="explain">
+        <a-col :span="13" class="explain" v-if="!isMobile">
           <div class="login-aside-doc">
             <div class="login-aside-title">欢迎来到 LumenCMS</div>
             <div class="login-aside-desc">LumenCMS 是一个极简易开发的后台管理系统。采用了前后端分离开发模式。</div>
           </div>
           <logo-svg />
         </a-col>
-        <a-col :span="11" style="padding: 80px 30px 30px 30px; ">
+
+        <a-col :span="getSpan" class="login-formbox" style="padding: 80px 30px 30px 30px;">
           <div class="login-title">LumenCMS 管理系统</div>
           <div class="login-sub-title">欢迎来到 LumenCMS，请登录！</div>
-          <a-form id="formLogin" class="user-layout-login" ref="formLogin" :form="form" @submit="handleSubmit">
+          <a-form id="formLogin" ref="formLogin" :form="form" @submit="handleSubmit">
             <a-form-item>
               <a-input size="large" type="text" placeholder="请输入登录账号"
                 v-decorator="['username',{rules: [{ required: true, message: '请输入帐户名' }], validateTrigger: 'change',initialValue: 'admin'}]">
@@ -28,8 +29,8 @@
             </a-form-item>
 
             <a-form-item>
-              <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
-              <a-button type="link" style="float: right;padding-right: 0;">忘记密码?</a-button>
+              <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住登录</a-checkbox>
+              <a-button type="link" style="float: right;padding-right: 0;" @click="forgetPassword">忘记密码?</a-button>
             </a-form-item>
 
             <a-form-item style="margin-top:24px">
@@ -64,10 +65,20 @@
         state: {
           loginBtn: false,
           smsSendBtn: false
-        }
+        },
+        isMobile: false
       }
     },
-    created() {},
+    created() {
+      if (this.checkMobile()) {
+        this.isMobile = true;
+      }
+    },
+    computed: {
+      getSpan() {
+        return this.isMobile ? 24 : 11;
+      }
+    },
     methods: {
       ...mapActions(['Login', 'Logout']),
 
@@ -95,12 +106,22 @@
             delete loginParams.username
             loginParams['username'] = values.username
             loginParams.password = values.password
-            Login(loginParams)
-              .then((res) => this.loginSuccess(res))
-              .catch(err => this.requestFailed(err))
-              .finally(() => {
-                state.loginBtn = false
-              })
+
+            Login(loginParams).then((res) => {
+              if (res.code == 200) {
+                this.loginSuccess(res)
+              } else {
+                this.$notification['info']({
+                  message: '登录提示',
+                  description: res.message,
+                  duration: 4
+                });
+              }
+            }).catch(err => {
+              this.requestFailed(err)
+            }).finally(() => {
+              state.loginBtn = false
+            });
           } else {
             setTimeout(() => {
               state.loginBtn = false
@@ -127,30 +148,83 @@
           description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
           duration: 4
         });
+      },
+
+      forgetPassword() {
+        this.$notification.info({
+          message: '温馨提示',
+          description: `忘记密码？请联系管理员重置登录密码...`
+        });
+      },
+
+      checkMobile() {
+        let flag = navigator.userAgent.match(
+          /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+        )
+        return flag;
       }
+
     }
   }
 </script>
 
 <style lang="less" scoped type="text/less">
   .fixed-body {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  background: #f0f2f5 url(~@/assets/background.svg) no-repeat 50%;
+  background-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .login-main {
+    height: 560px;
+    max-width: 900px;
     width: 100%;
-    min-height: 100%;
-    height: 100%;
-    background: #f0f2f5 url(~@/assets/background.svg) no-repeat 50%;
-    background-size: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 0px 4px 4px 0px;
+    box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
 
-    .login-main {
+    .explain {
       height: 560px;
-      max-width: 900px;
-      width: 100%;
-      background: rgba(255, 255, 255, 1);
-      border-radius: 0px 4px 4px 0px;
+      text-align: right;
+      padding-left: 0;
+      padding-right: 0;
+      background: linear-gradient(314deg, rgba(82, 114, 244, 1) 0%, rgba(0, 170, 231, 1) 100%) rgba(0, 170, 231, 0.65);
+      background-color: rgba(0, 170, 231, 0.65);
+      background-blend-mode: saturation;
+      border-radius: 4px 0px 0px 4px;
       box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
-
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+  
+      .login-aside-doc {
+        .login-aside-title {
+          text-align: center;
+          line-height: 48px;
+          font-size: 32px;
+          font-weight: 400;
+          color: rgba(255, 255, 255, 1);
+          margin-bottom: 12px;
+        }
+  
+        .login-aside-desc {
+          text-align: center;
+          line-height: 18px;
+          font-size: 12px;
+          font-weight: 400;
+          color: rgba(255, 255, 255, 1);
+          margin-left: 82px;
+          margin-right: 81px;
+        }
+      }
+    }
+  
+    .login-formbox {
       .login-title {
         color: rgba(0, 170, 231, 1);
         font-size: 32px;
@@ -168,68 +242,21 @@
         margin-bottom: 64px;
         text-align: center;
       }
+
+      button.login-button {
+        padding: 0 15px;
+        font-size: 16px;
+        height: 40px;
+        width: 100%;
+      }
     }
   }
+}
 
 
-
-  .login-aside-doc {
-    .login-aside-title {
-      text-align: center;
-      line-height: 48px;
-      font-size: 32px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 1);
-      margin-bottom: 12px;
-    }
-
-    .login-aside-desc {
-      text-align: center;
-      line-height: 18px;
-      font-size: 12px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 1);
-      margin-left: 82px;
-      margin-right: 81px;
-    }
+@media screen and (max-width: 950px) {
+  .fixed-body .login-main {
+      height: 100%;
   }
-
-  .explain {
-    height: 560px;
-    text-align: right;
-    padding-left: 0;
-    padding-right: 0;
-    background: linear-gradient(314deg, rgba(82, 114, 244, 1) 0%, rgba(0, 170, 231, 1) 100%) rgba(0, 170, 231, 0.65);
-    background-color: rgba(0, 170, 231, 0.65);
-    background-blend-mode: saturation;
-    border-radius: 4px 0px 0px 4px;
-    box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.08);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .user-layout-login {
-    label {
-      font-size: 14px;
-    }
-
-    .getCaptcha {
-      display: block;
-      width: 100%;
-      height: 40px;
-    }
-
-    .forge-password {
-      font-size: 14px;
-    }
-
-    button.login-button {
-      padding: 0 15px;
-      font-size: 16px;
-      height: 40px;
-      width: 100%;
-    }
-  }
+}
 </style>

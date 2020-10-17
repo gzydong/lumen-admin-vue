@@ -1,6 +1,6 @@
 import {
   BasicLayout
-} from '@/layouts'
+} from '@/layouts';
 
 const RouteView = {
   name: 'RouteView',
@@ -64,7 +64,7 @@ export const asyncRouterMap = [{
       }]
     },
   ]
-}]
+}];
 
 /**
  * 基础路由
@@ -86,4 +86,4 @@ export const constantRouterMap = [{
     },
     component: () => import('@/views/exception/404'),
   }
-]
+];

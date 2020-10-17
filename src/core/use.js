@@ -10,7 +10,6 @@ import 'ant-design-vue/dist/antd.less'
 import VueClipboard from 'vue-clipboard2'
 import MultiTab from '@/components/MultiTab'
 import PageLoading from '@/components/PageLoading'
-// import '@/components/use'
 
 VueClipboard.config.autoSetContainer = true
 

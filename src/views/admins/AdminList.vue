@@ -5,7 +5,7 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="登录账号"">
+              <a-form-item label="账号"">
                 <a-input v-model=" queryParam.username" placeholder="" />
               </a-form-item>
             </a-col>
@@ -47,7 +47,7 @@
       </div>
 
       <s-table ref="table" size="default" rowKey="id" :columns="columns" :data="loadData" :alert="true"
-        :rowSelection="rowSelection" :showPagination="true" :scroll="{ x: 1300 }">
+        :rowSelection="rowSelection" :showPagination="true" :scroll="{ x: 1200 }">
 
         <span slot="status" slot-scope="text">
           <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
@@ -162,7 +162,7 @@
             .then(res => {
               this.localLoading = false
               return res.data
-            })
+            });
         },
         selectedRowKeys: [],
         selectedRows: []

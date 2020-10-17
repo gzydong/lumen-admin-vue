@@ -1,4 +1,4 @@
-import storage from 'store'
+import storage from 'store';
 import {
   SIDEBAR_TYPE,
   TOGGLE_MOBILE_TYPE,
@@ -13,8 +13,8 @@ import {
   TOGGLE_MULTI_TAB,
   // i18n
   APP_LANGUAGE
-} from '@/store/mutation-types'
-import { loadLanguageAsync } from '@/locales'
+} from '@/store/mutation-types';
+import { loadLanguageAsync } from '@/locales';
 
 const app = {
   state: {
@@ -91,7 +91,7 @@ const app = {
         }).catch((e) => {
           reject(e)
         })
-      })
+      });
     }
   }
 }
