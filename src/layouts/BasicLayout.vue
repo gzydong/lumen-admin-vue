@@ -15,7 +15,7 @@
     </template>
 
     <template v-slot:footerRender>
-      LumenCMS Version 1.0
+      <span>LumenCMS Version 1.0</span>
     </template>
     <router-view />
   </pro-layout>
@@ -40,17 +40,16 @@
 
   import defaultSettings from '@/config/defaultSettings';
   import RightContent from '@/components/GlobalHeader/RightContent';
-  import GlobalFooter from '@/components/GlobalFooter';
   import LogoSvg from '../assets/logo.svg?inline';
   import {
     asyncRouterMap
   } from '@/config/router.config.js';
+  
   export default {
     name: 'BasicLayout',
     components: {
       SettingDrawer,
       RightContent,
-      GlobalFooter,
       LogoSvg
     },
     data() {
