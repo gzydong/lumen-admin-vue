@@ -48,7 +48,7 @@ export const asyncRouterMap = [{
       }, {
         path: '/admins/roles',
         name: 'roles',
-        component: () => import('@/views/admins/AdminList'),
+        component: () => import('@/views/admins/RolesList'),
         meta: {
           title: '角色管理',
           keepAlive: false,

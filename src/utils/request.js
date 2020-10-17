@@ -62,8 +62,6 @@ request.interceptors.request.use(config => {
 
 // 响应拦截器
 request.interceptors.response.use((response) => {
-  // console.log('asdfasd',response);
-
   return response.data;
 }, errorHandler);
 

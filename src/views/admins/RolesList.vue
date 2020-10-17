@@ -5,8 +5,8 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="账号"">
-                <a-input v-model=" queryParam.username" placeholder="" />
+              <a-form-item label="角色名"">
+                  <a-input v-model=" queryParam.username" placeholder="" />
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -49,26 +49,17 @@
       <s-table ref="table" size="default" rowKey="id" :columns="columns" :data="loadData" :alert="true"
         :rowSelection="rowSelection" :showPagination="true" :scroll="{ x: 1200 }">
 
-        <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-        </span>
-
-        <span slot="email" slot-scope="text">
-          {{text?text:'-'}}
-        </span>
-
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record)">重置密码</a>
+            <a>编辑</a>
             <a-divider type="vertical" />
-            <a @click="handleSub(record)">编辑</a>
-            <a-divider type="vertical" />
-            <a @click="handleSub(record)">授权</a>
+            <a>分配权限</a>
           </template>
         </span>
       </s-table>
 
-      <create-form ref="createModal" :visible="visible" :model="mdl" @cancel="handleCancel" @ok="handleOk" />
+      <create-form ref="createModal" :visible="visible" :loading="confirmLoading" :model="mdl" @cancel="handleCancel"
+        @ok="handleOk" />
     </a-card>
   </page-header-wrapper>
 </template>
@@ -80,67 +71,45 @@
     Ellipsis
   } from '@/components'
   import {
-    getUserList,
-    createAdminApi
+    getRoleList
   } from '@/api/manage'
 
-  import CreateForm from './modules/AdminForm'
+  import CreateForm from './modules/CreateForm'
 
   const columns = [{
-      title: '登录账号',
-      dataIndex: 'username'
+      title: '角色名称',
+      dataIndex: 'display_name',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
-      scopedSlots: {
-        customRender: 'email'
-      },
+      title: '权限字符',
+      dataIndex: 'name'
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      scopedSlots: {
-        customRender: 'status'
-      }
+      title: '角色描述',
+      dataIndex: 'description'
     },
     {
       title: '创建时间',
       dataIndex: 'created_at',
-      align: 'center',
+      align: 'center'
     },
     {
-      title: '最后登录时间',
-      dataIndex: 'last_login_time',
+      title: '修改时间',
+      dataIndex: 'updated_at',
       sorter: true,
-      align: 'center',
-    },
-    {
-      title: '最后登录IP',
-      dataIndex: 'last_login_ip',
-      align: 'center',
+      align: 'center'
     },
     {
       title: '操作',
       dataIndex: 'action',
-      width: '200px',
+      width: '150px',
       align: 'center',
+      // fixed: 'right',
       scopedSlots: {
         customRender: 'action'
       }
     }
   ]
-
-  const statusMap = {
-    0: {
-      status: 'default',
-      text: '已禁用'
-    },
-    10: {
-      status: 'processing',
-      text: '正常'
-    }
-  }
 
   export default {
     name: 'TableList',
@@ -161,21 +130,13 @@
         // 加载数据方法 必须为 Promise 对象
         loadData: parameter => {
           const requestParameters = Object.assign({}, parameter, this.queryParam);
-          return getUserList(requestParameters).then(res => {
+          return getRoleList(requestParameters).then(res => {
             this.localLoading = false
             return res.data
           });
         },
         selectedRowKeys: [],
         selectedRows: []
-      }
-    },
-    filters: {
-      statusFilter(type) {
-        return statusMap[type].text
-      },
-      statusTypeFilter(type) {
-        return statusMap[type].status
       }
     },
     computed: {
@@ -200,19 +161,55 @@
           ...record
         }
       },
-      handleOk(type) {
-        this.visible = false;
-        console.log(type);
+      handleOk() {
+        const form = this.$refs.createModal.form
+        this.confirmLoading = true
+        form.validateFields((errors, values) => {
+          if (!errors) {
+            console.log('values', values)
+            if (values.id > 0) {
+              // 修改 e.g.
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  resolve()
+                }, 1000)
+              }).then(res => {
+                this.visible = false
+                this.confirmLoading = false
+                // 重置表单数据
+                form.resetFields()
+                // 刷新表格
+                this.$refs.table.refresh()
+
+                this.$message.info('修改成功')
+              })
+            } else {
+              // 新增
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  resolve()
+                }, 1000)
+              }).then(res => {
+                this.visible = false
+                this.confirmLoading = false
+                // 重置表单数据
+                form.resetFields()
+                // 刷新表格
+                this.$refs.table.refresh()
+
+                this.$message.info('新增成功')
+              })
+            }
+          } else {
+            this.confirmLoading = false
+          }
+        })
       },
       handleCancel() {
-        this.visible = false;
-      },
-      handleSub(record) {
-        if (record.status !== 0) {
-          this.$message.info(`${record.no} 订阅成功`)
-        } else {
-          this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-        }
+        this.visible = false
+
+        const form = this.$refs.createModal.form
+        form.resetFields() // 清理表单数据（可不做）
       },
       onSelectChange(selectedRowKeys, selectedRows) {
         this.selectedRowKeys = selectedRowKeys
