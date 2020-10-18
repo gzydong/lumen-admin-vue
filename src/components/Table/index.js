@@ -153,6 +153,7 @@ export default {
       }
       )
       const result = this.data(parameter)
+
       // 对接自己的通用数据接口需要修改下方代码中的 r.page, r.total, r.rows
       // eslint-disable-next-line
       if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
@@ -180,8 +181,16 @@ export default {
           } catch (e) {
             this.localPagination = false
           }
+
           this.localDataSource = r.rows // 返回结果中的数组数据
+
           this.localLoading = false
+        }).catch(err=>{
+          this.localLoading = false;
+          let response = err.response;
+          if(response.status == 403){
+            this.locale.emptyText = '当前账号，暂无数据访问权限，如有疑问请联系管理员...';
+          }
         })
       }
     },
@@ -300,8 +309,9 @@ export default {
       this[k] && (props[k] = this[k])
       return props[k]
     })
+
     const table = (
-      <a-table {...{ props, scopedSlots: { ...this.$scopedSlots } }} onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
+      <a-table ref="meTable" {...{ props, scopedSlots: { ...this.$scopedSlots } }} onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
         { Object.keys(this.$slots).map(name => (<template slot={name}>{this.$slots[name]}</template>)) }
       </a-table>
     )

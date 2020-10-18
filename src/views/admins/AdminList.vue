@@ -4,12 +4,12 @@
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="账号"">
-                <a-input v-model=" queryParam.username" placeholder="" />
+            <a-col :md="6" :sm="24">
+              <a-form-item label="账号">
+                <a-input v-model="queryParam.username" placeholder="" />
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
+            <a-col :md="6" :sm="24">
               <a-form-item label="状态">
                 <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
                   <a-select-option value="0">全部</a-select-option>
@@ -18,26 +18,25 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
+            <a-col :md="6" :sm="24">
               <span class="table-page-search-submitButtons">
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => this.queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="() => (this.queryParam = {})">重置</a-button>
               </span>
             </a-col>
           </a-row>
         </a-form>
       </div>
 
+      <!-- 表格操作 -->
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
         <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
         <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
           <a-menu slot="overlay">
-            <a-menu-item key="1">
-              <a-icon type="delete" />删除</a-menu-item>
+            <a-menu-item key="1"> <a-icon type="delete" />删除</a-menu-item>
             <!-- lock | unlock -->
-            <a-menu-item key="2">
-              <a-icon type="lock" />锁定</a-menu-item>
+            <a-menu-item key="2"> <a-icon type="lock" />锁定</a-menu-item>
           </a-menu>
           <a-button style="margin-left: 8px">
             批量操作
@@ -46,178 +45,218 @@
         </a-dropdown>
       </div>
 
-      <s-table ref="table" size="default" rowKey="id" :columns="columns" :data="loadData" :alert="true"
-        :rowSelection="rowSelection" :showPagination="true" :scroll="{ x: 1200 }">
-
+      <!-- Table 模板配置 -->
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        :alert="true"
+        :rowSelection="rowSelection"
+        :showPagination="true"
+        :scroll="{ x: 1200 }"
+      >
         <span slot="status" slot-scope="text">
           <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
         </span>
 
         <span slot="email" slot-scope="text">
-          {{text?text:'-'}}
+          {{ text ? text : '-' }}
+        </span>
+
+        <span slot="last_login_ip" slot-scope="ip">
+          {{ ip == '' ? '-' : ip }}
         </span>
 
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record)">重置密码</a>
-            <a-divider type="vertical" />
-            <a @click="handleSub(record)">编辑</a>
-            <a-divider type="vertical" />
             <a @click="handleSub(record)">授权</a>
+            <a-divider type="vertical" />
+            <a @click="handleResetPassword(record)">重置密码</a>
           </template>
         </span>
       </s-table>
 
-      <create-form ref="createModal" :visible="visible" :model="mdl" @cancel="handleCancel" @ok="handleOk" />
+      <!-- 创建管理员窗口 -->
+      <admin-form
+        ref="createModal"
+        :visible="createAdmin.visible"
+        :model="createAdmin.model"
+        @cancel="() => (this.createAdmin.visible = false)"
+        @success="handleAddOk"
+      />
+
+      <!-- 重置密码窗口 -->
+      <reset-password-from
+        ref="passwordModal"
+        :visible="passwordModal.visible"
+        :model="passwordModal.model"
+        @cancel="() => (this.passwordModal.visible = false)"
+      />
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-  import moment from 'moment'
-  import {
+import moment from 'moment'
+import { STable, Ellipsis } from '@/components'
+import { getUserList, createAdminApi } from '@/api/manage'
+
+import AdminForm from './modules/AdminForm'
+import ResetPasswordFrom from './modules/ResetPasswordFrom'
+
+const columns = [
+  {
+    title: '登录账号',
+    dataIndex: 'username'
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    scopedSlots: {
+      customRender: 'email'
+    }
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    scopedSlots: {
+      customRender: 'status'
+    }
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'created_at',
+    align: 'center',
+    sorter: true
+  },
+  {
+    title: '最后登录时间',
+    dataIndex: 'last_login_time',
+    sorter: true,
+    align: 'center'
+  },
+  {
+    title: '最后登录IP',
+    dataIndex: 'last_login_ip',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'last_login_ip'
+    }
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: '200px',
+    align: 'right',
+    scopedSlots: {
+      customRender: 'action'
+    }
+  }
+]
+
+const statusMap = {
+  0: {
+    status: 'default',
+    text: '已禁用'
+  },
+  10: {
+    status: 'processing',
+    text: '正常'
+  }
+}
+
+export default {
+  name: 'TableList',
+  components: {
     STable,
-    Ellipsis
-  } from '@/components'
-  import {
-    getUserList,
-    createAdminApi
-  } from '@/api/manage'
-
-  import CreateForm from './modules/AdminForm'
-
-  const columns = [{
-      title: '登录账号',
-      dataIndex: 'username'
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      scopedSlots: {
-        customRender: 'email'
+    Ellipsis,
+    AdminForm,
+    ResetPasswordFrom
+  },
+  data() {
+    this.columns = columns
+    return {
+      // 查询参数
+      queryParam: {},
+      // 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        const data = Object.assign({}, parameter, this.queryParam)
+        return getUserList(data).then(res => {
+          return res.data
+        })
       },
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      scopedSlots: {
-        customRender: 'status'
-      }
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'created_at',
-      align: 'center',
-    },
-    {
-      title: '最后登录时间',
-      dataIndex: 'last_login_time',
-      sorter: true,
-      align: 'center',
-    },
-    {
-      title: '最后登录IP',
-      dataIndex: 'last_login_ip',
-      align: 'center',
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      width: '200px',
-      align: 'center',
-      scopedSlots: {
-        customRender: 'action'
-      }
-    }
-  ]
+      selectedRowKeys: [],
+      selectedRows: [],
 
-  const statusMap = {
-    0: {
-      status: 'default',
-      text: '已禁用'
-    },
-    10: {
-      status: 'processing',
-      text: '正常'
-    }
-  }
-
-  export default {
-    name: 'TableList',
-    components: {
-      STable,
-      Ellipsis,
-      CreateForm
-    },
-    data() {
-      this.columns = columns
-      return {
-        // create model
+      // 创建管理员模块
+      createAdmin: {
         visible: false,
-        confirmLoading: false,
-        mdl: null,
-        // 查询参数
-        queryParam: {},
-        // 加载数据方法 必须为 Promise 对象
-        loadData: parameter => {
-          const requestParameters = Object.assign({}, parameter, this.queryParam);
-          return getUserList(requestParameters).then(res => {
-            this.localLoading = false
-            return res.data
-          });
-        },
-        selectedRowKeys: [],
-        selectedRows: []
-      }
-    },
-    filters: {
-      statusFilter(type) {
-        return statusMap[type].text
+        model: null
       },
-      statusTypeFilter(type) {
-        return statusMap[type].status
-      }
-    },
-    computed: {
-      rowSelection() {
-        return {
-          selectedRowKeys: this.selectedRowKeys,
-          onChange: this.onSelectChange
-        }
-      }
-    },
-    methods: {
-      handleAdd() {
-        this.mdl = null
-        this.visible = true
-      },
-      handleRefresh() {
-        this.$refs.table.refresh()
-      },
-      handleEdit(record) {
-        this.visible = true
-        this.mdl = {
-          ...record
-        }
-      },
-      handleOk(type) {
-        this.visible = false;
-        console.log(type);
-      },
-      handleCancel() {
-        this.visible = false;
-      },
-      handleSub(record) {
-        if (record.status !== 0) {
-          this.$message.info(`${record.no} 订阅成功`)
-        } else {
-          this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-        }
-      },
-      onSelectChange(selectedRowKeys, selectedRows) {
-        this.selectedRowKeys = selectedRowKeys
-        this.selectedRows = selectedRows
+
+      // 修改密码模块
+      passwordModal: {
+        visible: false,
+        model: null
       }
     }
+  },
+  filters: {
+    statusFilter(type) {
+      return statusMap[type].text
+    },
+    statusTypeFilter(type) {
+      return statusMap[type].status
+    }
+  },
+  computed: {
+    rowSelection() {
+      return {
+        selectedRowKeys: this.selectedRowKeys,
+        onChange: this.onSelectChange
+      }
+    }
+  },
+  methods: {
+    handleAdd() {
+      this.createAdmin.visible = true
+      this.createAdmin.model = {
+        id: 0,
+        username: '',
+        password: '',
+        password2: ''
+      }
+    },
+    handleAddOk() {
+      this.createAdmin.visible = false
+      this.queryParam = {}
+      this.$refs.table.refresh(true)
+    },
+    handleRefresh() {
+      this.$refs.table.refresh()
+    },
+    handleResetPassword(record) {
+      this.passwordModal.visible = true
+      this.passwordModal.model = {
+        id: record.id,
+        username: record.username,
+        password: '',
+        password2: ''
+      }
+    },
+    handleSub(record) {
+      if (record.status !== 0) {
+        this.$message.info(`${record.no} 订阅成功`)
+      } else {
+        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
+      }
+    },
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+    }
   }
+}
 </script>

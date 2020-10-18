@@ -77,7 +77,7 @@ export const constantRouterMap = [{
     meta: {
       title: '授权登录'
     },
-    component: () => import('@/views/user/NewLogin')
+    component: () => import('@/views/auth/Login')
   },
   {
     path: '*',

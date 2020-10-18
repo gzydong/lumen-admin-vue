@@ -25,13 +25,11 @@ const errorHandler = (error) => {
     const token = storage.get(ACCESS_TOKEN);
 
     if (error.response.status === 403) {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message
-      });
-    }
-
-    if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
+      // notification.error({
+      //   message: 'Forbidden',
+      //   description: data.message
+      // });
+    }else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.error({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
