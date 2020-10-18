@@ -60,6 +60,9 @@
         @cancel="handleCancel"
         @success="handleOk"
       />
+
+
+      <give-role-prems :visible="true" />
     </a-card>
   </page-header-wrapper>
 </template>
@@ -70,6 +73,7 @@ import { STable, Ellipsis } from '@/components'
 import { getRoleList, deleteRole } from '@/api/manage'
 
 import CreateForm from './modules/EditRoleFrom'
+import GiveRolePrems from './modules/GiveRolePrems'
 
 const columns = [
   {
@@ -111,7 +115,8 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateForm
+    CreateForm,
+    GiveRolePrems
   },
   data() {
     this.columns = columns

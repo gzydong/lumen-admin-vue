@@ -152,6 +152,8 @@ export default {
         ...filters
       }
       )
+
+      // 请求http数据
       const result = this.data(parameter)
 
       // 对接自己的通用数据接口需要修改下方代码中的 r.page, r.total, r.rows
@@ -165,6 +167,7 @@ export default {
             page_size: (pagination && pagination.page_size) ||
               this.localPagination.page_size
           }) || false
+
           // 为防止删除数据后导致页面当前页面数据长度为 0 ,自动翻页到上一页
           if (r.rows.length === 0 && this.showPagination && this.localPagination.current > 1) {
             this.localPagination.current--
@@ -182,15 +185,20 @@ export default {
             this.localPagination = false
           }
 
-          this.localDataSource = r.rows // 返回结果中的数组数据
+          // 返回结果中的数组数据
+          this.localDataSource = r.rows 
 
           this.localLoading = false
         }).catch(err=>{
-          this.localLoading = false;
           let response = err.response;
+          
           if(response.status == 403){
             this.locale.emptyText = '当前账号，暂无数据访问权限，如有疑问请联系管理员...';
+          }else if(response.status == 500){
+            this.locale.emptyText = '网络异常,请稍后再试...';
           }
+
+          this.localLoading = false;
         })
       }
     },
