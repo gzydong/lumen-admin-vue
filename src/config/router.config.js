@@ -33,7 +33,7 @@ export const asyncRouterMap = [{
       redirect: '/admins/lists',
       component: RouteView,
       meta: {
-        title: '权限管理',
+        title: '权限分配',
         keepAlive: true,
         icon: 'solution',
       },
@@ -42,7 +42,7 @@ export const asyncRouterMap = [{
         name: 'admins',
         component: () => import('@/views/admins/AdminList'),
         meta: {
-          title: '管理员',
+          title: '管理人员',
           keepAlive: false,
         }
       }, {
@@ -56,9 +56,9 @@ export const asyncRouterMap = [{
       }, {
         path: '/admins/permissions',
         name: 'permissions',
-        component: () => import('@/views/admins/AdminList'),
+        component: () => import('@/views/admins/RuleList'),
         meta: {
-          title: '权限设置',
+          title: '权限管理',
           keepAlive: false,
         }
       }]

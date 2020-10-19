@@ -18,6 +18,7 @@
           <a-input
             placeholder="请填写登录账号"
             :disabled="true"
+            style="background: none;"
             v-decorator="['username', { rules: [{ required: true, message: '登录账号不能为空！' }] }]"
           />
         </a-form-item>

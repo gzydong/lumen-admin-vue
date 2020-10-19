@@ -1,33 +1,6 @@
 <template>
   <page-header-wrapper :title="false">
     <a-card :bordered="false">
-      <div class="table-page-search-wrapper">
-        <a-form layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="6" :sm="24">
-              <a-form-item label="角色名称">
-                <a-input v-model="queryParam.rolename" placeholder="模糊查询" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item label="状态">
-                <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">正常</a-select-option>
-                  <a-select-option value="2">已禁用</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <span class="table-page-search-submitButtons">
-                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => (this.queryParam = {})">重置</a-button>
-              </span>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
-
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
         <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
@@ -39,14 +12,24 @@
         rowKey="id"
         :columns="columns"
         :data="loadData"
-        :showPagination="true"
+        :showPagination="false"
         :scroll="{ x: 1200 }"
       >
+        <span slot="type" slot-scope="text">
+          <a-badge v-if="text == 0" count="目录" :number-style="{ backgroundColor: '#1890ff' }" />
+          <a-badge v-else-if="text == 1" count="菜单" :number-style="{ backgroundColor: '#52c41a' }" />
+          <a-badge v-else="text == 2" count="权限" :number-style="{ backgroundColor: 'rgb(189, 193, 188)' }" />
+        </span>
+
         <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleEdit(record)">编辑</a>
+          <template v-if="record.type != 2">
+            <a @click="handleInsert(record)">新增</a>
             <a-divider type="vertical" />
-            <a @click="handleRolePrems(record)">分配权限</a>
+          </template>
+
+          <a @click="handleEdit(record)">编辑</a>
+
+          <template v-if="record.type == 2">
             <a-divider type="vertical" />
             <a @click="showConfirm(record)">删除</a>
           </template>
@@ -54,16 +37,14 @@
       </s-table>
 
       <!-- 创建角色及编辑角色窗口 -->
-      <create-form
+      <rule-form
         ref="createModal"
         :visible="createModal.visible"
         :model="createModal.model"
+        :tree="treeData"
         @cancel="handleCancel"
         @success="handleOk"
       />
-
-      <!-- 分配角色权限窗口 -->
-      <give-role-prems ref="giveRoleModal" :visible="giveRolePremsModal.visible" :model="giveRolePremsModal.model" @close="cancelGiveRole" />
     </a-card>
   </page-header-wrapper>
 </template>
@@ -71,40 +52,34 @@
 <script>
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import { getRoleList, deleteRole } from '@/api/manage'
+import { getRoleList, deleteRole, getPermissions } from '@/api/manage'
 
-import CreateForm from './modules/EditRoleFrom'
-import GiveRolePrems from './modules/GiveRolePrems'
+import RuleForm from './modules/RuleForm'
+import { formatTree, uniqueArr } from '@/utils/util'
 
 const columns = [
   {
-    title: '角色名称',
-    dataIndex: 'display_name'
+    title: '权限名称',
+    dataIndex: 'rule_name'
   },
   {
-    title: '权限字符',
-    dataIndex: 'name'
+    title: '权限路由',
+    dataIndex: 'route'
   },
   {
-    title: '角色描述',
-    dataIndex: 'description'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    align: 'center'
-  },
-  {
-    title: '修改时间',
-    dataIndex: 'updated_at',
-    sorter: true,
-    align: 'center'
+    title: '权限类型',
+    dataIndex: 'type',
+    width: '150px',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'type'
+    }
   },
   {
     title: '操作',
     dataIndex: 'action',
     width: '180px',
-    align: 'center',
+    align: 'right',
     scopedSlots: {
       customRender: 'action'
     }
@@ -116,11 +91,11 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateForm,
-    GiveRolePrems
+    RuleForm
   },
   data() {
     this.columns = columns
+    let _this = this
     return {
       // 查询参数
       queryParam: {},
@@ -128,7 +103,19 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return getRoleList(data).then(res => {
+        return getPermissions(data).then(res => {
+          res.data.rows.map(row => {
+            row.key = row.id
+            row.pid = row.parent_id
+            return row
+          })
+
+          res.data.rows = formatTree(res.data.rows)
+
+          _this.treeData = res.data.rows
+
+          console.log(res.data)
+
           return res.data
         })
       },
@@ -139,18 +126,24 @@ export default {
         visible: false
       },
 
-      // 分配角色权限弹出层
-      giveRolePremsModal: {
-        model: null,
-        visible: false
-      }
+      treeData: [],
     }
   },
   methods: {
+    formatData(data){
+      console.log(data)
+
+    },
+
     handleAdd() {
       this.$refs.createModal.form.resetFields()
       this.createModal.visible = true
       this.createModal.model = null
+    },
+    handleInsert(record) {
+      this.$refs.createModal.form.resetFields()
+      this.createModal.visible = true
+      this.$refs.createModal.setParentId(record.id)
     },
     handleRefresh() {
       this.$refs.table.refresh()
@@ -158,10 +151,11 @@ export default {
     handleEdit(record) {
       this.createModal.visible = true
       this.createModal.model = {
-        description: record.description,
-        display_name: record.display_name,
         id: record.id,
-        name: record.name
+        parent_id: record.parent_id,
+        type: record.type,
+        route: record.route,
+        rule_name: record.rule_name
       }
     },
     handleOk() {
@@ -172,16 +166,6 @@ export default {
     handleCancel() {
       this.createModal.visible = false
       this.$refs.createModal.form.resetFields()
-    },
-    handleRolePrems(record) {
-      this.giveRolePremsModal.visible = true
-      this.giveRolePremsModal.model = {
-        display_name: record.display_name,
-        id: record.id
-      }
-    },
-    cancelGiveRole() {
-      this.giveRolePremsModal.visible = false
     },
     showConfirm(data) {
       let _this = this
@@ -205,7 +189,7 @@ export default {
             })
         }
       })
-    }
+    },
   }
 }
 </script>

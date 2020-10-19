@@ -9,15 +9,16 @@ const api = {
   updatePassword: '/admins/update-password',
   user: '/admins/lists',
   role: '/rbac/roles',
-  permission: '/permission',
   createRole: '/rbac/create-role',
   editRole: '/rbac/edit-role',
   deleteRole: '/rbac/delete-role',
   createPermission: '/rbac/create-permission',
   editPermission: '/rbac/edit-permission',
+  getPermission: '/rbac/permissions',
   deletePermission: '/rbac/delete-permission',
   giveRolePermission: '/rbac/give-role-permission',
   giveAdminPermission: '/rbac/give-admin-permission',
+  getRolePermission: '/rbac/get-role-permission'
 }
 
 export default api
@@ -47,11 +48,11 @@ export function getRoleList(parameter) {
   })
 }
 
-export function getPermissions(parameter) {
+export function getPermissions(data) {
   return request({
-    url: api.permissionNoPager,
+    url: api.getPermission,
     method: 'get',
-    params: parameter
+    params: data
   })
 }
 
@@ -101,3 +102,22 @@ export function editRole(data) {
 export function deleteRole(data) {
   return post(api.deleteRole, data);
 }
+
+/**
+ * 创建角色接口
+ * 
+ * @param {*} data 
+ */
+export function getRolePerms(data) {
+  return get(api.getRolePermission, data);
+}
+
+
+export function giveRolePermission(data) {
+  return post(api.giveRolePermission, data);
+}
+
+export function createPermission(data) {
+  return post(api.createPermission, data);
+}
+
