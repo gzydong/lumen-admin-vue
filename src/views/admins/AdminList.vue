@@ -5,13 +5,13 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="6" :sm="24">
-              <a-form-item label="账号">
-                <a-input v-model="queryParam.username" placeholder="" />
+              <a-form-item label="登录账号">
+                <a-input v-model="queryParam.username" />
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item label="状态">
-                <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
+                <a-select v-model="queryParam.status" placeholder="默认(全部)" default-value="0">
                   <a-select-option value="0">全部</a-select-option>
                   <a-select-option value="1">正常</a-select-option>
                   <a-select-option value="2">已禁用</a-select-option>
@@ -61,14 +61,6 @@
           <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
         </span>
 
-        <span slot="email" slot-scope="text">
-          {{ text ? text : '-' }}
-        </span>
-
-        <span slot="last_login_ip" slot-scope="ip">
-          {{ ip == '' ? '-' : ip }}
-        </span>
-
         <span slot="action" slot-scope="text, record">
           <template>
             <a @click="handleSub(record)">授权</a>
@@ -99,91 +91,86 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
-import { getUserList, createAdminApi } from '@/api/manage'
+import { ServeGetAdmins } from '@/api/user'
 
 import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'
 
-const columns = [
-  {
-    title: '登录账号',
-    dataIndex: 'username'
-  },
-  {
-    title: '邮箱',
-    dataIndex: 'email',
-    scopedSlots: {
-      customRender: 'email'
-    }
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    scopedSlots: {
-      customRender: 'status'
-    }
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    align: 'center',
-    sorter: true
-  },
-  {
-    title: '最后登录时间',
-    dataIndex: 'last_login_time',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: '最后登录IP',
-    dataIndex: 'last_login_ip',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'last_login_ip'
-    }
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    width: '200px',
-    align: 'right',
-    scopedSlots: {
-      customRender: 'action'
-    }
-  }
-]
-
 const statusMap = {
   0: {
     status: 'default',
-    text: '已禁用'
+    text: '已禁用',
   },
   10: {
     status: 'processing',
-    text: '正常'
-  }
+    text: '正常',
+  },
 }
 
 export default {
   name: 'TableList',
   components: {
-    STable,
-    Ellipsis,
     AdminForm,
-    ResetPasswordFrom
+    ResetPasswordFrom,
   },
   data() {
-    this.columns = columns
     return {
+      columns: [
+        {
+          title: '登录账号',
+          dataIndex: 'username',
+        },
+        {
+          title: '邮箱',
+          dataIndex: 'email',
+          customRender: (text, record, index) => {
+            return text == '' ? '-' : text
+          },
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status',
+          },
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'created_at',
+          align: 'center',
+          sorter: true,
+        },
+        {
+          title: '最后登录时间',
+          dataIndex: 'last_login_time',
+          sorter: true,
+          align: 'center',
+        },
+        {
+          title: '最后登录IP',
+          dataIndex: 'last_login_ip',
+          align: 'center',
+          customRender: (text, record, index) => {
+            return text == '' ? '-' : text
+          },
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '200px',
+          align: 'right',
+          scopedSlots: {
+            customRender: 'action',
+          },
+        },
+      ],
+
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
+      loadData: (parameter) => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return getUserList(data).then(res => {
+        return ServeGetAdmins(data).then((res) => {
           return res.data
         })
       },
@@ -193,14 +180,14 @@ export default {
       // 创建管理员模块
       createAdmin: {
         visible: false,
-        model: null
+        model: null,
       },
 
       // 修改密码模块
       passwordModal: {
         visible: false,
-        model: null
-      }
+        model: null,
+      },
     }
   },
   filters: {
@@ -209,15 +196,15 @@ export default {
     },
     statusTypeFilter(type) {
       return statusMap[type].status
-    }
+    },
   },
   computed: {
     rowSelection() {
       return {
         selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
+        onChange: this.onSelectChange,
       }
-    }
+    },
   },
   methods: {
     handleAdd() {
@@ -226,7 +213,7 @@ export default {
         id: 0,
         username: '',
         password: '',
-        password2: ''
+        password2: '',
       }
     },
     handleAddOk() {
@@ -243,7 +230,7 @@ export default {
         id: record.id,
         username: record.username,
         password: '',
-        password2: ''
+        password2: '',
       }
     },
     handleSub(record) {
@@ -256,7 +243,7 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-    }
-  }
+    },
+  },
 }
 </script>

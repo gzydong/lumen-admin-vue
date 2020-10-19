@@ -19,7 +19,7 @@
             show-search
             style="width: 100%"
             v-model="parent_id"
-            :dropdown-style="{ maxHeight: '600px', overflow: 'auto' }"
+            :dropdown-style="{ maxHeight: '500px', overflow: 'auto' }"
             placeholder="不选择默认为顶级栏目"
             allow-clear
             tree-default-expand-all
@@ -57,336 +57,29 @@
 import Vue from 'vue'
 import { TreeSelect } from 'ant-design-vue'
 Vue.use(TreeSelect)
+
 import pick from 'lodash.pick'
-import { createPermission, editRole } from '@/api/manage'
+
+import { ServeCreatePerms, ServeEditPerms } from '@/api/rbac'
 
 // 表单字段
 const fields = ['id', 'type', 'route', 'rule_name']
-
-let meTree = [
-  {
-    id: 1,
-    pid: 0,
-    type: 1,
-    route: 'admin',
-    display_name: '控制台',
-    description: null,
-    created_at: null,
-    updated_at: null,
-    key: 1
-  },
-  {
-    id: 2,
-    pid: 0,
-    type: 0,
-    route: '',
-    display_name: '权限管理',
-    description: null,
-    created_at: null,
-    updated_at: null,
-    key: 2,
-    children: [
-      {
-        id: 3,
-        pid: 2,
-        type: 1,
-        route: 'admin/rbac/admin-page',
-        display_name: '管理员管理',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 3,
-        children: [
-          {
-            id: 6,
-            pid: 3,
-            type: 2,
-            route: 'admin/rbac/get-admin-api',
-            display_name: '查看管理员数据',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 6
-          },
-          {
-            id: 7,
-            pid: 3,
-            type: 2,
-            route: 'admin/rbac/reset-admin-pwd',
-            display_name: '重置密码',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 7
-          },
-          {
-            id: 8,
-            pid: 3,
-            type: 2,
-            route: 'admin/rbac/chage-admin-status-api',
-            display_name: '修改状态',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 8
-          },
-          {
-            id: 36,
-            pid: 3,
-            type: 2,
-            route: 'admin/rbac/give-role-api',
-            display_name: '分配管理员角色',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 36
-          }
-        ]
-      },
-      {
-        id: 4,
-        pid: 2,
-        type: 1,
-        route: 'admin/rbac/role-page',
-        display_name: '角色管理',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 4,
-        children: [
-          {
-            id: 9,
-            pid: 4,
-            type: 2,
-            route: 'admin/rbac/get-role-api',
-            display_name: '查看角色数据',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 9
-          },
-          {
-            id: 37,
-            pid: 4,
-            type: 2,
-            route: 'admin/rbac/add-role-api',
-            display_name: '添加/编辑角色',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 37
-          },
-          {
-            id: 38,
-            pid: 4,
-            type: 2,
-            route: 'admin/rbac/give-permissions-api',
-            display_name: '分配角色权限',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 38
-          },
-          {
-            id: 39,
-            pid: 4,
-            type: 2,
-            route: 'admin/rbac/chage-role-status-api',
-            display_name: '修改角色状态',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 39
-          }
-        ]
-      },
-      {
-        id: 5,
-        pid: 2,
-        type: 1,
-        route: 'admin/rbac/permissions-page',
-        display_name: '规则管理',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 5,
-        children: [
-          {
-            id: 40,
-            pid: 5,
-            type: 2,
-            route: 'admin/rbac/edit-permissions-api',
-            display_name: '添加规则',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 40
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 41,
-    pid: 46,
-    type: 0,
-    route: '无',
-    display_name: '微信管理',
-    description: null,
-    created_at: null,
-    updated_at: null,
-    key: 41,
-    children: [
-      {
-        id: 42,
-        pid: 41,
-        type: 0,
-        route: 'admin/wechat/wx-conf-page',
-        display_name: '微信配置设置',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 42,
-        children: [
-          {
-            id: 43,
-            pid: 42,
-            type: 0,
-            route: 'admin/wechat/wx-conf-api',
-            display_name: '编辑微信配置参数',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 43
-          }
-        ]
-      },
-      {
-        id: 44,
-        pid: 41,
-        type: 0,
-        route: 'admin/wechat/menu-page',
-        display_name: '公众号菜单设置',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 44,
-        children: [
-          {
-            id: 45,
-            pid: 44,
-            type: 0,
-            route: 'admin/wechat/wx-publish-menu-api',
-            display_name: '编辑公众号菜单',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 45
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 59,
-    pid: 0,
-    type: 0,
-    route: '空',
-    display_name: '用户管理',
-    description: null,
-    created_at: null,
-    updated_at: null,
-    key: 59,
-    children: [
-      {
-        id: 67,
-        pid: 59,
-        type: 0,
-        route: 'admin/view/user-manage-page',
-        display_name: '用户列表',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 67,
-        children: [
-          {
-            id: 70,
-            pid: 67,
-            type: 0,
-            route: 'admin/api/get-userlist-api',
-            display_name: '查看用户数据',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 70
-          },
-          {
-            id: 71,
-            pid: 67,
-            type: 0,
-            route: 'admin/api/edit-user-api',
-            display_name: '修改用户信息',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 71
-          }
-        ]
-      },
-      {
-        id: 68,
-        pid: 59,
-        type: 0,
-        route: 'admin/view/user_level-mange-page',
-        display_name: '会员等级',
-        description: null,
-        created_at: null,
-        updated_at: null,
-        key: 68,
-        children: [
-          {
-            id: 69,
-            pid: 68,
-            type: 0,
-            route: 'admin/api/get-userLevel-api',
-            display_name: '查看会员等级信息',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 69
-          },
-          {
-            id: 72,
-            pid: 68,
-            type: 0,
-            route: 'admin/api/edit-userLevel-api',
-            display_name: '添加/编辑会员等级信息',
-            description: null,
-            created_at: null,
-            updated_at: null,
-            key: 72
-          }
-        ]
-      }
-    ]
-  }
-]
 
 export default {
   name: 'RuleForm',
   props: {
     visible: {
       type: Boolean,
-      required: true
+      required: true,
     },
     model: {
       type: Object,
-      default: null
+      default: null,
     },
     tree: {
       type: Array,
-      default: []
-    }
+      default: [],
+    },
   },
   data() {
     return {
@@ -396,31 +89,31 @@ export default {
       formLayout: {
         labelCol: {
           xs: {
-            span: 24
+            span: 24,
           },
           sm: {
-            span: 7
-          }
+            span: 7,
+          },
         },
         wrapperCol: {
           xs: {
-            span: 24
+            span: 24,
           },
           sm: {
-            span: 13
-          }
-        }
-      }
+            span: 13,
+          },
+        },
+      },
     }
   },
   watch: {
     model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-    }
+    },
   },
   created() {
     // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
+    fields.forEach((v) => this.form.getFieldDecorator(v))
   },
   methods: {
     ok() {
@@ -447,8 +140,8 @@ export default {
     },
     add(values) {
       values.parent_id = this.parent_id == undefined ? 0 : this.parent_id
-      createPermission(values)
-        .then(res => {
+      ServeCreatePerms(values)
+        .then((res) => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色添加成功...')
@@ -457,7 +150,7 @@ export default {
             this.$message.info('角色添加失败...')
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
@@ -465,8 +158,8 @@ export default {
 
     edit(values) {
       values.role_id = values.id
-      editRole(values)
-        .then(res => {
+      ServeEditPerms(values)
+        .then((res) => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色编辑成功...')
@@ -475,11 +168,11 @@ export default {
             this.$message.info('角色编辑失败...')
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

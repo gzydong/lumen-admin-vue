@@ -13,11 +13,19 @@ const request = axios.create({
   baseURL: process.env.VUE_APP_API_BASE_URL,
 
   // 请求超时时间
-  timeout: 6000,
+  timeout: 8000,
 });
 
-// 异常拦截处理器
+// 通知消息唯一key
+const notifyKey = 'forbidden';
+
+/**
+ * 异常拦截处理器
+ * 
+ * @param {*} error 
+ */
 const errorHandler = (error) => {
+  // 判断是否是响应错误信息
   if (error.response) {
     const data = error.response.data;
 
@@ -25,11 +33,12 @@ const errorHandler = (error) => {
     const token = storage.get(ACCESS_TOKEN);
 
     if (error.response.status === 403) {
-      // notification.error({
-      //   message: 'Forbidden',
-      //   description: data.message
-      // });
-    }else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
+      notification.error({
+        key: notifyKey,
+        message: 'Forbidden',
+        description: data.message
+      });
+    } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.error({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
@@ -62,11 +71,6 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use((response) => {
   return response.data;
 }, errorHandler);
-
-/**
- * 默认请求实例
- */
-export default request;
 
 /**
  * 发送 get 请求

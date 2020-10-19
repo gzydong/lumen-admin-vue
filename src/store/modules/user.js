@@ -3,7 +3,8 @@ import storage from 'store';
 import {
   login,
   logout
-} from '@/api/login';
+} from '@/api/auth';
+
 import {
   ACCESS_TOKEN,
   ADMIN_INFO

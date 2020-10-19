@@ -50,89 +50,78 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
-import { getRoleList, deleteRole, getPermissions } from '@/api/manage'
+import { ServeGetPerms, ServeDeletePerms } from '@/api/rbac'
 
 import RuleForm from './modules/RuleForm'
 import { formatTree, uniqueArr } from '@/utils/util'
 
-const columns = [
-  {
-    title: '权限名称',
-    dataIndex: 'rule_name'
-  },
-  {
-    title: '权限路由',
-    dataIndex: 'route'
-  },
-  {
-    title: '权限类型',
-    dataIndex: 'type',
-    width: '150px',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'type'
-    }
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    width: '180px',
-    align: 'right',
-    scopedSlots: {
-      customRender: 'action'
-    }
-  }
-]
-
 export default {
   name: 'TableList',
   components: {
-    STable,
-    Ellipsis,
-    RuleForm
+    RuleForm,
   },
   data() {
-    this.columns = columns
-    let _this = this
     return {
+      columns: [
+        {
+          title: '权限名称',
+          dataIndex: 'rule_name',
+        },
+        {
+          title: '权限路由',
+          dataIndex: 'route',
+        },
+        {
+          title: '权限类型',
+          dataIndex: 'type',
+          width: '150px',
+          align: 'center',
+          scopedSlots: {
+            customRender: 'type',
+          },
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '180px',
+          align: 'right',
+          scopedSlots: {
+            customRender: 'action',
+          },
+        },
+      ],
+
       // 查询参数
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
+      loadData: (parameter) => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return getPermissions(data).then(res => {
-          res.data.rows.map(row => {
-            row.key = row.id
-            row.pid = row.parent_id
-            return row
-          })
-
-          res.data.rows = formatTree(res.data.rows)
-
-          _this.treeData = res.data.rows
-
-          console.log(res.data)
-
-          return res.data
+        return ServeGetPerms(data).then((res) => {
+          return this.formatData(res.data)
         })
       },
 
       // 创建角色弹出层
       createModal: {
         model: null,
-        visible: false
+        visible: false,
       },
 
+      // 权限树结构
       treeData: [],
     }
   },
   methods: {
-    formatData(data){
-      console.log(data)
+    formatData(data) {
+      data.rows.map((row) => {
+        row.key = row.id
+        row.pid = row.parent_id
+        return row
+      })
 
+      this.treeData = data.rows = formatTree(data.rows)
+      return data
     },
 
     handleAdd() {
@@ -155,7 +144,7 @@ export default {
         parent_id: record.parent_id,
         type: record.type,
         route: record.route,
-        rule_name: record.rule_name
+        rule_name: record.rule_name,
       }
     },
     handleOk() {
@@ -171,12 +160,12 @@ export default {
       let _this = this
       this.$confirm({
         title: '确定删除该条角色信息吗？',
-        content: h => <div style="color:red;">删除后不可恢复</div>,
+        content: (h) => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
-          return deleteRole({
-            role_id: data.id
+          return ServeDeletePerms({
+            role_id: data.id,
           })
-            .then(res => {
+            .then((res) => {
               if (res.code == 200) {
                 _this.$message.success('角色删除成功...')
                 _this.handleRefresh()
@@ -184,12 +173,12 @@ export default {
                 _this.$message.error('角色删除失败...')
               }
             })
-            .catch(err => {
+            .catch((err) => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        }
+        },
       })
     },
-  }
+  },
 }
 </script>

@@ -10,6 +10,10 @@ import i18n from './locales';
 import ProLayout, {
   PageHeaderWrapper
 } from '@ant-design-vue/pro-layout';
+import {
+  STable
+} from '@/components'
+
 import themePluginConfig from '../config/themePluginConfig';
 
 import bootstrap from './core/bootstrap';
@@ -20,11 +24,13 @@ import './global.less'; // global style
 
 Vue.config.productionTip = false;
 
-
 // use pro-layout components
 Vue.component('pro-layout', ProLayout);
 Vue.component('page-container', PageHeaderWrapper);
 Vue.component('page-header-wrapper', PageHeaderWrapper);
+
+// 全局引入 STable 组件
+Vue.component('s-table', STable);
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme;
 

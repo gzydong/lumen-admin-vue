@@ -17,8 +17,12 @@ import {
 
 import defaultSettings from '@/config/defaultSettings';
 
+/**
+ * 项目初始化函数
+ *
+ * @export
+ */
 export default function Initializer() {
-
   // 读取APP配置
   store.commit(TOGGLE_LAYOUT, storage.get(TOGGLE_LAYOUT, defaultSettings.layout));
   store.commit(TOGGLE_FIXED_HEADER, storage.get(TOGGLE_FIXED_HEADER, defaultSettings.fixedHeader));

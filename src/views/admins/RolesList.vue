@@ -63,72 +63,72 @@
       />
 
       <!-- 分配角色权限窗口 -->
-      <give-role-prems ref="giveRoleModal" :visible="giveRolePremsModal.visible" :model="giveRolePremsModal.model" @close="cancelGiveRole" />
+      <give-role-prems
+        ref="giveRoleModal"
+        :visible="giveRolePremsModal.visible"
+        :model="giveRolePremsModal.model"
+        @close="cancelGiveRole"
+      />
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
-import { getRoleList, deleteRole } from '@/api/manage'
-
+import { ServeGetRoles, ServeDeleteRole } from '@/api/rbac'
 import CreateForm from './modules/EditRoleFrom'
 import GiveRolePrems from './modules/GiveRolePrems'
-
-const columns = [
-  {
-    title: '角色名称',
-    dataIndex: 'display_name'
-  },
-  {
-    title: '权限字符',
-    dataIndex: 'name'
-  },
-  {
-    title: '角色描述',
-    dataIndex: 'description'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    align: 'center'
-  },
-  {
-    title: '修改时间',
-    dataIndex: 'updated_at',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    width: '180px',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'action'
-    }
-  }
-]
 
 export default {
   name: 'TableList',
   components: {
-    STable,
-    Ellipsis,
     CreateForm,
-    GiveRolePrems
+    GiveRolePrems,
   },
   data() {
-    this.columns = columns
     return {
+      // 表格栏目
+      columns: [
+        {
+          title: '角色名称',
+          dataIndex: 'display_name',
+        },
+        {
+          title: '权限字符',
+          dataIndex: 'name',
+        },
+        {
+          title: '角色描述',
+          dataIndex: 'description',
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'created_at',
+          align: 'center',
+        },
+        {
+          title: '修改时间',
+          dataIndex: 'updated_at',
+          sorter: true,
+          align: 'center',
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '180px',
+          align: 'center',
+          scopedSlots: {
+            customRender: 'action',
+          },
+        },
+      ],
+
       // 查询参数
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
+      loadData: (parameter) => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return getRoleList(data).then(res => {
+        return ServeGetRoles(data).then((res) => {
           return res.data
         })
       },
@@ -136,14 +136,14 @@ export default {
       // 创建角色弹出层
       createModal: {
         model: null,
-        visible: false
+        visible: false,
       },
 
       // 分配角色权限弹出层
       giveRolePremsModal: {
         model: null,
-        visible: false
-      }
+        visible: false,
+      },
     }
   },
   methods: {
@@ -161,7 +161,7 @@ export default {
         description: record.description,
         display_name: record.display_name,
         id: record.id,
-        name: record.name
+        name: record.name,
       }
     },
     handleOk() {
@@ -177,7 +177,7 @@ export default {
       this.giveRolePremsModal.visible = true
       this.giveRolePremsModal.model = {
         display_name: record.display_name,
-        id: record.id
+        id: record.id,
       }
     },
     cancelGiveRole() {
@@ -187,12 +187,12 @@ export default {
       let _this = this
       this.$confirm({
         title: '确定删除该条角色信息吗？',
-        content: h => <div style="color:red;">删除后不可恢复</div>,
+        content: (h) => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
-          return deleteRole({
-            role_id: data.id
+          return ServeDeleteRole({
+            role_id: data.id,
           })
-            .then(res => {
+            .then((res) => {
               if (res.code == 200) {
                 _this.$message.success('角色删除成功...')
                 _this.handleRefresh()
@@ -200,12 +200,12 @@ export default {
                 _this.$message.error('角色删除失败...')
               }
             })
-            .catch(err => {
+            .catch((err) => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        }
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

@@ -35,7 +35,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { getRolePerms, giveRolePermission } from '@/api/manage'
+import { ServeGetRolePerms, ServeGiveRolePerms } from '@/api/rbac'
 
 import { formatTree } from '@/utils/util'
 // 表单字段
@@ -85,7 +85,7 @@ export default {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
 
       this.resetTree()
-      getRolePerms({
+      ServeGetRolePerms({
         role_id: this.model.id
       }).then(res => {
         if (res.code == 200) {
@@ -116,7 +116,7 @@ export default {
     submit(data) {
       console.log(data)
       this.loading = true
-      giveRolePermission({
+      ServeGiveRolePerms({
         role_id: data.id,
         permissions: data.perms.join(',')
       })

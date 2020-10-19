@@ -42,7 +42,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { createRole, editRole } from '@/api/manage'
+import { ServeCreateRole, ServeEditRole } from '@/api/rbac'
 
 // 表单字段
 const fields = ['id', 'name', 'display_name', 'description']
@@ -52,42 +52,40 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true
+      required: true,
     },
     model: {
       type: Object,
-      default: () => {
-        name: ''
-      }
-    }
+      default: () => null,
+    },
   },
   data() {
     this.formLayout = {
       labelCol: {
         xs: {
-          span: 24
+          span: 24,
         },
         sm: {
-          span: 7
-        }
+          span: 7,
+        },
       },
       wrapperCol: {
         xs: {
-          span: 24
+          span: 24,
         },
         sm: {
-          span: 13
-        }
-      }
+          span: 13,
+        },
+      },
     }
     return {
       loading: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
     }
   },
   created() {
     // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
+    fields.forEach((v) => this.form.getFieldDecorator(v))
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
@@ -115,8 +113,8 @@ export default {
     },
 
     add(values) {
-      createRole(values)
-        .then(res => {
+      ServeCreateRole(values)
+        .then((res) => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色添加成功...')
@@ -125,7 +123,7 @@ export default {
             this.$message.info('角色添加失败...')
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
@@ -133,8 +131,8 @@ export default {
 
     edit(values) {
       values.role_id = values.id
-      editRole(values)
-        .then(res => {
+      ServeEditRole(values)
+        .then((res) => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色编辑成功...')
@@ -143,11 +141,11 @@ export default {
             this.$message.info('角色编辑失败...')
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

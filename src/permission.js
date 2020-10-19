@@ -40,14 +40,26 @@ router.beforeEach((to, from, next) => {
       next(defaultRoutePath);
       NProgress.done();
     } else {
-      next();
+      const redirect = decodeURIComponent(from.query.redirect || to.path)
+      if (to.path === redirect) {
+        next()
+      } else {
+        next({
+          path: redirect
+        })
+      }
     }
   } else {
     // 在免登录名单，直接进入
     if (allowList.includes(to.name)) {
       next()
     } else {
-      next(loginRoutePath);
+      next({
+        path: loginRoutePath,
+        query: {
+          redirect: to.fullPath
+        }
+      });
       NProgress.done();
     }
   }

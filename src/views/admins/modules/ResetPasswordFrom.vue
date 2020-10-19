@@ -48,7 +48,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { updatePassword } from '@/api/manage'
+import { ServeUpdateAdminPassword } from '@/api/user'
 
 // 表单字段
 const fields = ['id', 'username', 'password', 'password2']
@@ -103,7 +103,7 @@ export default {
       this.loading = true
       this.form.validateFields((errors, values) => {
         if (!errors) {
-          updatePassword(values)
+          ServeUpdateAdminPassword(values)
             .then(res => {
               if (res.code == 200) {
                 this.loading = false
