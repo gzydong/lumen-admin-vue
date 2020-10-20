@@ -8,7 +8,9 @@
  */
 import bxAnaalyse from '@/assets/icons/bx-analyse.svg?inline'; // path to your '*.svg?inline' file.
 
+import LoginAsideSvg from '@/assets/login-aside.svg?inline'
 
-import LogoSvg from '@/assets/login-aside.svg?inline'
-
-export { bxAnaalyse,LogoSvg }
+export {
+  bxAnaalyse,
+  LoginAsideSvg
+}

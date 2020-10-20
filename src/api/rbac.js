@@ -6,7 +6,7 @@ import {
 // 接口列表
 const API_LISTS = {
   // 角色相关接口
-  roles: '/rbac/roles',                                          // 获取角色列表接口
+  roles: '/rbac/roles',                                         // 获取角色列表接口
   createRole: '/rbac/create-role',                              // 创建角色接口
   editRole: '/rbac/edit-role',                                  // 编辑角色接口
   deleteRole: '/rbac/delete-role',                              // 删除角色接口
@@ -106,7 +106,7 @@ export function ServeGetPerms(data){
  * @param {*} data 请求数据
  */
 export function ServeGiveRolePerms(data){
-  return get(API_LISTS.getPermission, data);
+  return post(API_LISTS.giveRolePermission, data);
 }
 
 /**
@@ -115,7 +115,7 @@ export function ServeGiveRolePerms(data){
  * @param {*} data 请求数据
  */
 export function ServeGiveAdminPerms(data){
-  return get(API_LISTS.getPermission, data);
+  return post(API_LISTS.giveAdminPermission, data);
 }
 
 /**
@@ -126,4 +126,3 @@ export function ServeGiveAdminPerms(data){
 export function ServeGetRolePerms(data){
   return get(API_LISTS.getRolePermission, data);
 }
-

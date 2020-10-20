@@ -28,11 +28,8 @@
           </template>
 
           <a @click="handleEdit(record)">编辑</a>
-
-          <template v-if="record.type == 2">
-            <a-divider type="vertical" />
-            <a @click="showConfirm(record)">删除</a>
-          </template>
+          <a-divider type="vertical" />
+          <a @click="showConfirm(record)">删除</a>
         </span>
       </s-table>
 
@@ -58,18 +55,18 @@ import { formatTree, uniqueArr } from '@/utils/util'
 export default {
   name: 'TableList',
   components: {
-    RuleForm,
+    RuleForm
   },
   data() {
     return {
       columns: [
         {
           title: '权限名称',
-          dataIndex: 'rule_name',
+          dataIndex: 'rule_name'
         },
         {
           title: '权限路由',
-          dataIndex: 'route',
+          dataIndex: 'route'
         },
         {
           title: '权限类型',
@@ -77,8 +74,8 @@ export default {
           width: '150px',
           align: 'center',
           scopedSlots: {
-            customRender: 'type',
-          },
+            customRender: 'type'
+          }
         },
         {
           title: '操作',
@@ -86,18 +83,18 @@ export default {
           width: '180px',
           align: 'right',
           scopedSlots: {
-            customRender: 'action',
-          },
-        },
+            customRender: 'action'
+          }
+        }
       ],
 
       // 查询参数
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetPerms(data).then((res) => {
+        return ServeGetPerms(data).then(res => {
           return this.formatData(res.data)
         })
       },
@@ -105,16 +102,16 @@ export default {
       // 创建角色弹出层
       createModal: {
         model: null,
-        visible: false,
+        visible: false
       },
 
       // 权限树结构
-      treeData: [],
+      treeData: []
     }
   },
   methods: {
     formatData(data) {
-      data.rows.map((row) => {
+      data.rows.map(row => {
         row.key = row.id
         row.pid = row.parent_id
         return row
@@ -123,7 +120,6 @@ export default {
       this.treeData = data.rows = formatTree(data.rows)
       return data
     },
-
     handleAdd() {
       this.$refs.createModal.form.resetFields()
       this.createModal.visible = true
@@ -141,15 +137,16 @@ export default {
       this.createModal.visible = true
       this.createModal.model = {
         id: record.id,
-        parent_id: record.parent_id,
-        type: record.type,
+        type: record.type.toString(),
         route: record.route,
-        rule_name: record.rule_name,
+        rule_name: record.rule_name
       }
+
+      this.$refs.createModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
     },
     handleOk() {
       this.createModal.visible = false
-      this.$refs.table.refresh(true)
+      this.$refs.table.refresh()
       this.$refs.createModal.form.resetFields()
     },
     handleCancel() {
@@ -157,28 +154,30 @@ export default {
       this.$refs.createModal.form.resetFields()
     },
     showConfirm(data) {
+      console.log(data)
+
       let _this = this
       this.$confirm({
-        title: '确定删除该条角色信息吗？',
-        content: (h) => <div style="color:red;">删除后不可恢复</div>,
+        title: '确定删除该条权限信息吗？',
+        content: h => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
           return ServeDeletePerms({
-            role_id: data.id,
+            id: data.id
           })
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
-                _this.$message.success('角色删除成功...')
+                _this.$message.success('权限删除成功...')
                 _this.handleRefresh()
               } else {
-                _this.$message.error('角色删除失败...')
+                _this.$message.error('权限删除失败...')
               }
             })
-            .catch((err) => {
+            .catch(err => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>

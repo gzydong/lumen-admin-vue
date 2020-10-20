@@ -4,7 +4,7 @@
     :width="550"
     :visible="visible"
     :confirmLoading="loading"
-    okText="立即添加"
+    :okText="model ? '立即编辑' : '立即添加'"
     cancelText="取消"
     @ok="ok"
     @cancel="cancel"
@@ -121,6 +121,7 @@ export default {
       let _this = this
       this.form.validateFields((errors, values) => {
         if (!errors) {
+          values.parent_id = this.parent_id == undefined ? 0 : this.parent_id
           if (values.id > 0) {
             _this.edit(values)
           } else {
@@ -139,7 +140,6 @@ export default {
       this.parent_id = parent_id
     },
     add(values) {
-      values.parent_id = this.parent_id == undefined ? 0 : this.parent_id
       ServeCreatePerms(values)
         .then((res) => {
           this.loading = false
@@ -157,7 +157,6 @@ export default {
     },
 
     edit(values) {
-      values.role_id = values.id
       ServeEditPerms(values)
         .then((res) => {
           this.loading = false

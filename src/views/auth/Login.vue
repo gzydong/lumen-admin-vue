@@ -6,7 +6,7 @@
           <div class="login-aside-title">欢迎来到 LumenCMS</div>
           <div class="login-aside-desc">LumenCMS 是一个极简易开发的后台管理系统。采用了前后端分离开发模式。</div>
         </div>
-        <logo-svg />
+        <login-aside-svg />
       </div>
 
       <div class="login-formbox">
@@ -23,8 +23,8 @@
                 {
                   rules: [{ required: true, message: '请输入帐户名' }],
                   validateTrigger: 'change',
-                  initialValue: 'admin',
-                },
+                  initialValue: 'admin'
+                }
               ]"
             >
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -40,8 +40,8 @@
                 {
                   rules: [{ required: true, message: '请输入密码' }],
                   validateTrigger: 'blur',
-                  initialValue: 'admin888',
-                },
+                  initialValue: 'admin888'
+                }
               ]"
             >
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -73,18 +73,18 @@
 <script>
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { LogoSvg } from '@/core/icons'
+import { LoginAsideSvg } from '@/core/icons'
 
 export default {
   components: {
-    LogoSvg,
+    LoginAsideSvg
   },
   data() {
     return {
       form: this.$form.createForm(this),
       state: {
-        loginBtn: false,
-      },
+        loginBtn: false
+      }
     }
   },
   methods: {
@@ -96,7 +96,7 @@ export default {
       const {
         form: { validateFields },
         state,
-        Login,
+        Login
       } = this
 
       state.loginBtn = true
@@ -104,12 +104,12 @@ export default {
       validateFields(
         ['username', 'password'],
         {
-          force: true,
+          force: true
         },
         (err, values) => {
           if (!err) {
             const loginParams = {
-              ...values,
+              ...values
             }
 
             delete loginParams.username
@@ -117,18 +117,18 @@ export default {
             loginParams.password = values.password
 
             Login(loginParams)
-              .then((res) => {
+              .then(res => {
                 if (res.code == 200) {
                   this.loginSuccess(res)
                 } else {
                   this.$notification['info']({
                     message: '登录提示',
                     description: res.message,
-                    duration: 4,
+                    duration: 4
                   })
                 }
               })
-              .catch((err) => {
+              .catch(err => {
                 this.requestFailed(err)
               })
               .finally(() => {
@@ -144,14 +144,14 @@ export default {
     },
     loginSuccess(res) {
       this.$router.push({
-        name: 'index',
+        name: 'index'
       })
 
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
         this.$notification.success({
           message: '欢迎',
-          description: `${timeFix()}，欢迎回来`,
+          description: `${timeFix()}，欢迎回来`
         })
       }, 1000)
     },
@@ -159,17 +159,17 @@ export default {
       this.$notification['error']({
         message: '错误',
         description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
-        duration: 4,
+        duration: 4
       })
     },
 
     forgetPassword() {
       this.$notification.info({
         message: '温馨提示',
-        description: `忘记密码？请联系管理员重置登录密码...`,
+        description: `忘记密码？请联系管理员重置登录密码...`
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

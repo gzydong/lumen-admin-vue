@@ -25,6 +25,7 @@
     <template v-slot:footerRender>
       <span>LumenCMS Version 1.0</span>
     </template>
+
     <router-view />
   </pro-layout>
 </template>
@@ -37,7 +38,7 @@ import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mu
 
 import defaultSettings from '@/config/defaultSettings'
 import RightContent from '@/components/GlobalHeader/RightContent'
-import LogoSvg from '../assets/logo.svg?inline'
+import LogoSvg from '@/assets/logo.svg?inline'
 import { asyncRouterMap } from '@/config/router.config.js'
 
 export default {
@@ -45,7 +46,7 @@ export default {
   components: {
     SettingDrawer,
     RightContent,
-    LogoSvg,
+    LogoSvg
   },
   data() {
     return {
@@ -73,23 +74,23 @@ export default {
         colorWeak: defaultSettings.colorWeak,
 
         hideHintAlert: false,
-        hideCopyButton: false,
+        hideCopyButton: false
       },
       // 媒体查询
       query: {},
 
       // 是否手机模式
-      isMobile: false,
+      isMobile: false
     }
   },
   computed: {
     ...mapState({
       // 动态主路由
-      mainMenu: (state) => state.permission.addRouters,
-    }),
+      mainMenu: state => state.permission.addRouters
+    })
   },
   created() {
-    const routes = asyncRouterMap.find((item) => item.path === '/')
+    const routes = asyncRouterMap.find(item => item.path === '/')
     this.menus = (routes && routes.children) || []
     // 处理侧栏收起状态
     this.$watch('collapsed', () => {
@@ -150,8 +151,8 @@ export default {
           }
           break
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -120,6 +120,7 @@ export default {
   methods: {
     /**
      * 表格重新加载方法
+     * 
      * 如果参数为 true, 则强制刷新到第一页
      * @param Boolean bool
      */
@@ -127,16 +128,19 @@ export default {
       bool && (this.localPagination = Object.assign({}, {
         current: 1, page_size: this.page_size
       }))
+
       this.loadData()
     },
     /**
-     * 加载数据方法
+     * 远程加载数据方法
+     * 
      * @param {Object} pagination 分页选项器
      * @param {Object} filters 过滤条件
      * @param {Object} sorter 排序条件
      */
     loadData (pagination, filters, sorter) {
       this.localLoading = true
+
       const parameter = Object.assign({
         page: (pagination && pagination.current) ||
           this.showPagination && this.localPagination.current || this.pageNum,
@@ -187,15 +191,20 @@ export default {
 
           // 返回结果中的数组数据
           this.localDataSource = r.rows 
-
+          this.locale.emptyText = null
           this.localLoading = false
         }).catch(err=>{
           let response = err.response;
-          
-          if(response.status == 403){
+
+          if(response == undefined){
+            this.locale.emptyText = '网络繁忙,请稍后再试...';
+          }else if(response.status == 403){
             this.locale.emptyText = '当前账号，暂无数据访问权限，如有疑问请联系管理员...';
           }else if(response.status == 500){
-            this.locale.emptyText = '网络异常,请稍后再试...';
+            this.$notification.error({
+              message: '异常提示',
+              description: '服务器异常,请稍后再试...'
+            });
           }
 
           this.localLoading = false;

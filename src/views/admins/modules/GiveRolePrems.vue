@@ -17,14 +17,14 @@
           <a-input v-decorator="['display_name']" disabled style="background: none;" />
         </a-form-item>
         <a-form-item label="角色权限">
-          <div class="tree-box">
+          <div class="tree-box" v-if="treeData">
             <a-tree
               v-model="checkedKeys"
               checkable
               :tree-data="treeData"
-              :auto-expand-parent="true"
               :blockNode="true"
-              :defaultExpandAll="true"
+              :checkStrictly="false"
+              @check="onCheck"
             />
           </div>
         </a-form-item>
@@ -37,7 +37,7 @@
 import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms } from '@/api/rbac'
 
-import { formatTree } from '@/utils/util'
+import { formatTree, uniqueArr } from '@/utils/util'
 // 表单字段
 const fields = ['id', 'display_name']
 
@@ -72,12 +72,13 @@ export default {
         }
       }
     }
-
     return {
       loading: false,
       form: this.$form.createForm(this),
       checkedKeys: [],
-      treeData: []
+      halfCheckedKeys: [],
+      treeData: [],
+      pids: []
     }
   },
   watch: {
@@ -89,8 +90,24 @@ export default {
         role_id: this.model.id
       }).then(res => {
         if (res.code == 200) {
-          this.treeData = formatTree(res.data.permissions)
-          this.checkedKeys = res.data.role_perms
+          let prems = res.data.permissions
+          let role_perms = res.data.role_perms
+          this.treeData = formatTree(prems)
+
+          prems.forEach(value => {
+            if (value.pid > 0) {
+              this.pids.push(value.pid)
+            }
+          })
+
+          let pids = uniqueArr(this.pids)
+          role_perms.forEach(val => {
+            if (pids.indexOf(val) >= 0) {
+              this.halfCheckedKeys.push(val)
+            } else {
+              this.checkedKeys.push(val)
+            }
+          })
         }
       })
     }
@@ -103,8 +120,7 @@ export default {
     ok() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          values.perms = this.checkedKeys
-          this.submit(values)
+          this.submit(values.id)
         }
       })
     },
@@ -113,12 +129,12 @@ export default {
       this.resetTree()
       this.$emit('close')
     },
-    submit(data) {
-      console.log(data)
+    submit(role_id) {
+      let permissions = [...this.checkedKeys, this.halfCheckedKeys].join(',')
       this.loading = true
       ServeGiveRolePerms({
-        role_id: data.id,
-        permissions: data.perms.join(',')
+        role_id,
+        permissions
       })
         .then(res => {
           if (res.code == 200) {
@@ -139,6 +155,9 @@ export default {
     resetTree() {
       this.checkedKeys = []
       this.treeData = []
+    },
+    onCheck(checkedKeys, info) {
+      this.halfCheckedKeys = info.halfCheckedKeys
     }
   }
 }

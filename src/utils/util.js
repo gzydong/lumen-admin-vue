@@ -73,43 +73,35 @@ export function removeLoadingAnimate(id = '', timeout = 1500) {
  * @param {*} data 
  */
 export function formatTree(data) {
-  // 删除 所有 children,以防止多次调用
-  data.forEach(function (item) {
-    delete item.children;
+  let cloneData = JSON.parse(JSON.stringify(data)) // 对源数据深度克隆
+  let tree = cloneData.filter((father) => { //循环所有项
+    let branchArr = cloneData.filter((child) => {
+      return father.id == child.pid //返回每一项的子级数组
+    });
+
+    if (branchArr.length > 0) {
+      father.children = branchArr; //如果存在子级，则给父级添加一个children属性，并赋值
+    }
+
+    return father.pid == 0; //返回第一层
   });
 
-  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
-  var map = {};
-  data.forEach(function (item) {
-    map[item.id] = item;
-  });
-  var val = [];
-  data.forEach(function (item) {
-    // 以当前遍历项，的pid,去map对象中找到索引的id
-    var parent = map[item.pid];
-    // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
-    if (parent) {
-      (parent.children || (parent.children = [])).push(item);
-    } else {
-      //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
-      val.push(item);
-    }
-  });
-  return val
+  return tree
 }
 
 
 export const uniqueArr = (arr) => {
   if (Array.hasOwnProperty('from')) {
-      return Array.from(new Set(arr));
+    return Array.from(new Set(arr));
   } else {
-      var n = {}, r = [];
-      for (var i = 0; i < arr.length; i++) {
-          if (!n[arr[i]]) {
-              n[arr[i]] = true;
-              r.push(arr[i]);
-          }
+    var n = {},
+      r = [];
+    for (var i = 0; i < arr.length; i++) {
+      if (!n[arr[i]]) {
+        n[arr[i]] = true;
+        r.push(arr[i]);
       }
-      return r;
+    }
+    return r;
   }
 }

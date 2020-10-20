@@ -39,7 +39,7 @@ const errorHandler = (error) => {
         description: data.message
       });
     } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      notification.error({
+      notification.warning({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
       });
