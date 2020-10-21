@@ -5,12 +5,17 @@ const GitRevision = new GitRevisionPlugin()
 const buildDate = JSON.stringify(new Date().toLocaleString())
 const createThemeColorReplacerPlugin = require('./config/plugin.config')
 
-function resolve (dir) {
+// compression-webpack-plugin，添加压缩文件类型
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
+
+
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
 // check Git
-function getGitHash () {
+function getGitHash() {
   try {
     return GitRevision.version()
   } catch (e) {}
@@ -25,7 +30,8 @@ const assetsCDN = {
     vue: 'Vue',
     'vue-router': 'VueRouter',
     vuex: 'Vuex',
-    axios: 'axios'
+    axios: 'axios',
+    'vue-i18n': 'VueI18n',
   },
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/
@@ -33,7 +39,8 @@ const assetsCDN = {
     '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
     '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
     '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
-    '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
+    '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js',
+    '//cdn.jsdelivr.net/npm/vue-i18n@8.17.4/dist/vue-i18n.min.js',
   ]
 }
 
@@ -48,6 +55,13 @@ const vueConfig = {
         APP_VERSION: `"${require('./package.json').version}"`,
         GIT_HASH: JSON.stringify(getGitHash()),
         BUILD_DATE: buildDate
+      }),
+      new CompressionWebpackPlugin({
+        filename: '[path][base].gz',
+        algorithm: 'gzip',
+        test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+        threshold: 10240,
+        minRatio: 0.8
       })
     ],
     // if prod, add externals
@@ -113,7 +127,7 @@ const vueConfig = {
     // }
   },
 
-  // disable source map in production
+  // 是否为生产环境构建生成 source map？
   productionSourceMap: false,
   // lintOnSave: undefined,
   lintOnSave: false,
