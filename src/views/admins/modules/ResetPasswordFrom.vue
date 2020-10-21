@@ -14,7 +14,7 @@
         <a-form-item v-show="false" label="主键ID">
           <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
         </a-form-item>
-        <a-form-item label="登录账号" >
+        <a-form-item label="登录账号">
           <a-input
             placeholder="请填写登录账号"
             :disabled="true"
@@ -66,25 +66,25 @@ export default {
     }
   },
   data() {
-    this.formLayout = {
-      labelCol: {
-        xs: {
-          span: 24
+    return {
+      formLayout: {
+        labelCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 7
+          }
         },
-        sm: {
-          span: 7
+        wrapperCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 13
+          }
         }
       },
-      wrapperCol: {
-        xs: {
-          span: 24
-        },
-        sm: {
-          span: 13
-        }
-      }
-    }
-    return {
       loading: false,
       form: this.$form.createForm(this)
     }

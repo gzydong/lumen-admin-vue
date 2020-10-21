@@ -154,8 +154,6 @@ export default {
       this.$refs.createModal.form.resetFields()
     },
     showConfirm(data) {
-      console.log(data)
-
       let _this = this
       this.$confirm({
         title: '确定删除该条权限信息吗？',

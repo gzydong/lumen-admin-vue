@@ -32,11 +32,11 @@
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
         <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
-        <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+        <a-dropdown v-if="selectedRowKeys.length > 0">
           <a-menu slot="overlay">
+            <a-menu-item key="2"> <a-icon type="check-circle" />启用</a-menu-item>
+            <a-menu-item key="1"> <a-icon type="stop" />禁用</a-menu-item>
             <a-menu-item key="1"> <a-icon type="delete" />删除</a-menu-item>
-            <!-- lock | unlock -->
-            <a-menu-item key="2"> <a-icon type="lock" />锁定</a-menu-item>
           </a-menu>
           <a-button style="margin-left: 8px">
             批量操作
@@ -63,7 +63,7 @@
 
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleSub(record)">授权</a>
+            <a @click="handleSub(record)">分配权限</a>
             <a-divider type="vertical" />
             <a @click="handleResetPassword(record)">重置密码</a>
           </template>
@@ -86,6 +86,14 @@
         :model="passwordModal.model"
         @cancel="() => (this.passwordModal.visible = false)"
       />
+
+      <!-- 分配管理员角色及权限窗口 -->
+      <give-admin-role-prems
+        ref="giveAdminRoleModal"
+        :visible="giveAdminRolePremsModal.visible"
+        :model="giveAdminRolePremsModal.model"
+        @close="() => (this.giveAdminRolePremsModal.visible = false)"
+      />
     </a-card>
   </page-header-wrapper>
 </template>
@@ -95,16 +103,17 @@ import { ServeGetAdmins } from '@/api/user'
 
 import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'
+import GiveAdminRolePrems from './modules/GiveAdminRolePrems'
 
 const statusMap = {
   0: {
     status: 'default',
-    text: '已禁用',
+    text: '已禁用'
   },
   10: {
     status: 'processing',
-    text: '正常',
-  },
+    text: '正常'
+  }
 }
 
 export default {
@@ -112,39 +121,40 @@ export default {
   components: {
     AdminForm,
     ResetPasswordFrom,
+    GiveAdminRolePrems
   },
   data() {
     return {
       columns: [
         {
           title: '登录账号',
-          dataIndex: 'username',
+          dataIndex: 'username'
         },
         {
           title: '邮箱',
           dataIndex: 'email',
           customRender: (text, record, index) => {
             return text == '' ? '-' : text
-          },
+          }
         },
         {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: {
-            customRender: 'status',
-          },
+            customRender: 'status'
+          }
         },
         {
           title: '创建时间',
           dataIndex: 'created_at',
           align: 'center',
-          sorter: true,
+          sorter: true
         },
         {
           title: '最后登录时间',
           dataIndex: 'last_login_time',
           sorter: true,
-          align: 'center',
+          align: 'center'
         },
         {
           title: '最后登录IP',
@@ -152,7 +162,7 @@ export default {
           align: 'center',
           customRender: (text, record, index) => {
             return text == '' ? '-' : text
-          },
+          }
         },
         {
           title: '操作',
@@ -160,17 +170,17 @@ export default {
           width: '200px',
           align: 'right',
           scopedSlots: {
-            customRender: 'action',
-          },
-        },
+            customRender: 'action'
+          }
+        }
       ],
 
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetAdmins(data).then((res) => {
+        return ServeGetAdmins(data).then(res => {
           return res.data
         })
       },
@@ -180,14 +190,20 @@ export default {
       // 创建管理员模块
       createAdmin: {
         visible: false,
-        model: null,
+        model: null
       },
 
       // 修改密码模块
       passwordModal: {
         visible: false,
-        model: null,
+        model: null
       },
+
+      // 分配角色权限弹出层
+      giveAdminRolePremsModal: {
+        model: null,
+        visible: false
+      }
     }
   },
   filters: {
@@ -196,15 +212,15 @@ export default {
     },
     statusTypeFilter(type) {
       return statusMap[type].status
-    },
+    }
   },
   computed: {
     rowSelection() {
       return {
         selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange,
+        onChange: this.onSelectChange
       }
-    },
+    }
   },
   methods: {
     handleAdd() {
@@ -213,7 +229,7 @@ export default {
         id: 0,
         username: '',
         password: '',
-        password2: '',
+        password2: ''
       }
     },
     handleAddOk() {
@@ -230,20 +246,20 @@ export default {
         id: record.id,
         username: record.username,
         password: '',
-        password2: '',
+        password2: ''
       }
     },
     handleSub(record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
+      this.giveAdminRolePremsModal.visible = true
+      this.giveAdminRolePremsModal.model = {
+        admin_id: record.id,
+        admin_name: record.username
       }
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-    },
-  },
+    }
+  }
 }
 </script>

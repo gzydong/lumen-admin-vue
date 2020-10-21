@@ -70,50 +70,50 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true,
+      required: true
     },
     model: {
       type: Object,
-      default: null,
+      default: null
     },
     tree: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
   data() {
     return {
-      loading: false,
-      form: this.$form.createForm(this),
-      parent_id: undefined,
       formLayout: {
         labelCol: {
           xs: {
-            span: 24,
+            span: 24
           },
           sm: {
-            span: 7,
-          },
+            span: 7
+          }
         },
         wrapperCol: {
           xs: {
-            span: 24,
+            span: 24
           },
           sm: {
-            span: 13,
-          },
-        },
+            span: 13
+          }
+        }
       },
+      loading: false,
+      form: this.$form.createForm(this),
+      parent_id: undefined
     }
   },
   watch: {
     model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-    },
+    }
   },
   created() {
     // 防止表单未注册
-    fields.forEach((v) => this.form.getFieldDecorator(v))
+    fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
     ok() {
@@ -141,7 +141,7 @@ export default {
     },
     add(values) {
       ServeCreatePerms(values)
-        .then((res) => {
+        .then(res => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色添加成功...')
@@ -150,7 +150,7 @@ export default {
             this.$message.info('角色添加失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
@@ -158,7 +158,7 @@ export default {
 
     edit(values) {
       ServeEditPerms(values)
-        .then((res) => {
+        .then(res => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色编辑成功...')
@@ -167,11 +167,11 @@ export default {
             this.$message.info('角色编辑失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

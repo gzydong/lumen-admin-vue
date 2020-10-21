@@ -52,40 +52,40 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true,
+      required: true
     },
     model: {
       type: Object,
-      default: () => null,
-    },
+      default: () => null
+    }
   },
   data() {
-    this.formLayout = {
-      labelCol: {
-        xs: {
-          span: 24,
-        },
-        sm: {
-          span: 7,
-        },
-      },
-      wrapperCol: {
-        xs: {
-          span: 24,
-        },
-        sm: {
-          span: 13,
-        },
-      },
-    }
     return {
+      formLayout: {
+        labelCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 7
+          }
+        },
+        wrapperCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 13
+          }
+        }
+      },
       loading: false,
-      form: this.$form.createForm(this),
+      form: this.$form.createForm(this)
     }
   },
   created() {
     // 防止表单未注册
-    fields.forEach((v) => this.form.getFieldDecorator(v))
+    fields.forEach(v => this.form.getFieldDecorator(v))
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
@@ -114,7 +114,7 @@ export default {
 
     add(values) {
       ServeCreateRole(values)
-        .then((res) => {
+        .then(res => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色添加成功...')
@@ -123,7 +123,7 @@ export default {
             this.$message.info('角色添加失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
@@ -132,7 +132,7 @@ export default {
     edit(values) {
       values.role_id = values.id
       ServeEditRole(values)
-        .then((res) => {
+        .then(res => {
           this.loading = false
           if (res.code == 200) {
             this.$message.success('角色编辑成功...')
@@ -141,11 +141,11 @@ export default {
             this.$message.info('角色编辑失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
           this.loading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

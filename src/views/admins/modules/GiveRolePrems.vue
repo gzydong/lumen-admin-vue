@@ -54,25 +54,25 @@ export default {
     }
   },
   data() {
-    this.formLayout = {
-      labelCol: {
-        xs: {
-          span: 24
+    return {
+      formLayout: {
+        labelCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 7
+          }
         },
-        sm: {
-          span: 7
+        wrapperCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 13
+          }
         }
       },
-      wrapperCol: {
-        xs: {
-          span: 24
-        },
-        sm: {
-          span: 13
-        }
-      }
-    }
-    return {
       loading: false,
       form: this.$form.createForm(this),
       checkedKeys: [],

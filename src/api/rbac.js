@@ -20,7 +20,8 @@ const API_LISTS = {
   // 其它角色权限相关接口
   giveRolePermission: '/rbac/give-role-permission',             // 角色赋予权限接口
   giveAdminPermission: '/rbac/give-admin-permission',           // 管理员赋予角色及独立权限接口
-  getRolePermission: '/rbac/get-role-permission'                // 获取角色的权限列表
+  getRolePermission: '/rbac/get-role-permission',               // 获取角色的权限列表
+  getAdminPermission:'/rbac/get-admin-permission'
 }
 
 /**
@@ -126,3 +127,14 @@ export function ServeGiveAdminPerms(data){
 export function ServeGetRolePerms(data){
   return get(API_LISTS.getRolePermission, data);
 }
+
+
+/**
+ * 获取管理员分配角色及接口
+ * 
+ * @param {*} data 请求数据
+ */
+export function ServeGetAdminPerms(data){
+  return get(API_LISTS.getAdminPermission, data);
+}
+

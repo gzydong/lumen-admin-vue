@@ -31,7 +31,7 @@
             placeholder="请填写确认密码"
             v-decorator="[
               'password2',
-              { rules: [{ required: true, message: '确认密码不能为空！' }, { validator: compareToFirstPassword }] },
+              { rules: [{ required: true, message: '确认密码不能为空！' }, { validator: compareToFirstPassword }] }
             ]"
             @keyup.native.enter="ok"
           />
@@ -53,40 +53,40 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true,
+      required: true
     },
     model: {
       type: Object,
-      default: () => null,
-    },
+      default: () => null
+    }
   },
   data() {
-    this.formLayout = {
-      labelCol: {
-        xs: {
-          span: 24,
-        },
-        sm: {
-          span: 7,
-        },
-      },
-      wrapperCol: {
-        xs: {
-          span: 24,
-        },
-        sm: {
-          span: 13,
-        },
-      },
-    }
     return {
+      formLayout: {
+        labelCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 7
+          }
+        },
+        wrapperCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 13
+          }
+        }
+      },
       loading: false,
-      form: this.$form.createForm(this),
+      form: this.$form.createForm(this)
     }
   },
   created() {
     // 防止表单未注册
-    fields.forEach((v) => this.form.getFieldDecorator(v))
+    fields.forEach(v => this.form.getFieldDecorator(v))
 
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
@@ -99,7 +99,7 @@ export default {
       this.form.validateFields((errors, values) => {
         if (!errors) {
           ServeCreateAdmin(values)
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
                 this.loading = false
                 this.$message.success('管理员添加成功...')
@@ -108,7 +108,7 @@ export default {
                 this.$message.info('管理员添加失败...')
               }
             })
-            .catch((err) => {
+            .catch(err => {
               this.$message.error('网络异常,请稍后再试...')
               this.loading = false
             })
@@ -127,7 +127,7 @@ export default {
       } else {
         callback()
       }
-    },
-  },
+    }
+  }
 }
 </script>
