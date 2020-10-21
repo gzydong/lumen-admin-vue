@@ -9,7 +9,6 @@ const createThemeColorReplacerPlugin = require('./config/plugin.config')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const productionGzipExtensions = ['js', 'css']
 
-
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -56,6 +55,8 @@ const vueConfig = {
         GIT_HASH: JSON.stringify(getGitHash()),
         BUILD_DATE: buildDate
       }),
+
+      // 配置大文件压缩相关参数
       new CompressionWebpackPlugin({
         filename: '[path][base].gz',
         algorithm: 'gzip',
@@ -64,6 +65,7 @@ const vueConfig = {
         minRatio: 0.8
       })
     ],
+
     // if prod, add externals
     externals: isProd ? assetsCDN.externals : {}
   },

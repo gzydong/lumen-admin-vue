@@ -29,8 +29,6 @@ Vue.config.productionTip = false;
 Vue.component('pro-layout', ProLayout);
 Vue.component('page-container', PageHeaderWrapper);
 Vue.component('page-header-wrapper', PageHeaderWrapper);
-
-// 全局引入 STable 组件
 Vue.component('s-table', STable);
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme;

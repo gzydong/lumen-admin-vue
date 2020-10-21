@@ -1,16 +1,13 @@
 <template>
   <div :class="wrpCls">
-    <span class="ant-pro-global-header-index-action">
-      <a-badge class="notice-badge" count="12">
-        <a-icon :class="['header-notice-icon']" type="bell" style="font-size: 16px;padding: 4px;" />
-      </a-badge>
-    </span>
+    <!-- 消息通知提示 -->
+    <header-notice :class="prefixCls" />
+
+    <!-- 用户设置 -->
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
-    <span
-      class="ant-pro-global-header-index-action"
-      v-show="!isMobile"
-      @click="eventFullscreen"
-    >
+
+    <!-- 浏览全屏模式 -->
+    <span :class="prefixCls" v-show="!isMobile" @click="eventFullscreen">
       <a-tooltip placement="bottom">
         <template slot="title">
           <span>浏览器全屏</span>
@@ -19,52 +16,55 @@
       </a-tooltip>
     </span>
 
+    <!-- 语言切换 -->
     <select-lang :class="prefixCls" />
   </div>
 </template>
 
 <script>
 import AvatarDropdown from './AvatarDropdown'
+import HeaderNotice from './HeaderNotice'
 import SelectLang from '@/components/SelectLang'
 
 export default {
   name: 'RightContent',
   components: {
     AvatarDropdown,
-    SelectLang
+    SelectLang,
+    HeaderNotice,
   },
   props: {
     prefixCls: {
       type: String,
-      default: 'ant-pro-global-header-index-action'
+      default: 'ant-pro-global-header-index-action',
     },
     isMobile: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     topMenu: {
       type: Boolean,
-      required: true
+      required: true,
     },
     theme: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       showMenu: true,
       currentUser: {},
-      isFullScreen: false
+      isFullScreen: false,
     }
   },
   computed: {
     wrpCls() {
       return {
         'ant-pro-global-header-index-right': true,
-        [`ant-pro-global-header-index-${this.isMobile || !this.topMenu ? 'light' : this.theme}`]: true
+        [`ant-pro-global-header-index-${this.isMobile || !this.topMenu ? 'light' : this.theme}`]: true,
       }
-    }
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -72,7 +72,7 @@ export default {
         name: this.$store.state.user.name || 'Serati Ma',
         avatar:
           this.$store.state.user.avatar ||
-          'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       }
     }, 500)
   },
@@ -104,7 +104,7 @@ export default {
 
         this.isFullScreen = true
       }
-    }
-  }
+    },
+  },
 }
 </script>
