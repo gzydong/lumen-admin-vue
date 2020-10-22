@@ -30,7 +30,7 @@
 
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
-        <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
+        <a-button type="primary" icon="plus" @click="handleAddRole">添加</a-button>
       </div>
 
       <s-table
@@ -44,11 +44,11 @@
       >
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record)">编辑</a>
+            <a @click="handleEditRole(record)">编辑</a>
             <a-divider type="vertical" />
             <a @click="handleRolePrems(record)">分配权限</a>
             <a-divider type="vertical" />
-            <a @click="showConfirm(record)">删除</a>
+            <a @click="deleteConfirm(record)">删除</a>
           </template>
         </span>
       </s-table>
@@ -59,7 +59,7 @@
         :visible="createModal.visible"
         :model="createModal.model"
         @cancel="handleCancel"
-        @success="handleOk"
+        @success="addSuccessCallback"
       />
 
       <!-- 分配角色权限窗口 -->
@@ -67,7 +67,7 @@
         ref="giveRoleModal"
         :visible="giveRolePremsModal.visible"
         :model="giveRolePremsModal.model"
-        @close="cancelGiveRole"
+        @close="() => (this.giveRolePremsModal.visible = false)"
       />
     </a-card>
   </page-header-wrapper>
@@ -82,7 +82,7 @@ export default {
   name: 'TableList',
   components: {
     CreateForm,
-    GiveRolePrems,
+    GiveRolePrems
   },
   data() {
     return {
@@ -90,26 +90,26 @@ export default {
       columns: [
         {
           title: '角色名称',
-          dataIndex: 'display_name',
+          dataIndex: 'display_name'
         },
         {
           title: '权限字符',
-          dataIndex: 'name',
+          dataIndex: 'name'
         },
         {
           title: '角色描述',
-          dataIndex: 'description',
+          dataIndex: 'description'
         },
         {
           title: '创建时间',
           dataIndex: 'created_at',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '修改时间',
           dataIndex: 'updated_at',
           sorter: true,
-          align: 'center',
+          align: 'center'
         },
         {
           title: '操作',
@@ -117,18 +117,18 @@ export default {
           width: '180px',
           align: 'center',
           scopedSlots: {
-            customRender: 'action',
-          },
-        },
+            customRender: 'action'
+          }
+        }
       ],
 
       // 查询参数
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetRoles(data).then((res) => {
+        return ServeGetRoles(data).then(res => {
           return res.data
         })
       },
@@ -136,63 +136,73 @@ export default {
       // 创建角色弹出层
       createModal: {
         model: null,
-        visible: false,
+        visible: false
       },
 
       // 分配角色权限弹出层
       giveRolePremsModal: {
         model: null,
-        visible: false,
-      },
+        visible: false
+      }
     }
   },
   methods: {
-    handleAdd() {
+    // 刷新表格数据
+    handleRefresh() {
+      this.$refs.table.refresh()
+    },
+
+    // 添加角色事件
+    handleAddRole() {
       this.$refs.createModal.form.resetFields()
       this.createModal.visible = true
       this.createModal.model = null
     },
-    handleRefresh() {
-      this.$refs.table.refresh()
-    },
-    handleEdit(record) {
+
+    // 编辑角色事件
+    handleEditRole(record) {
       this.createModal.visible = true
       this.createModal.model = {
         description: record.description,
         display_name: record.display_name,
         id: record.id,
-        name: record.name,
+        name: record.name
       }
     },
-    handleOk() {
+
+    // 添加角色成功回调事件
+    addSuccessCallback() {
       this.createModal.visible = false
       this.$refs.table.refresh(true)
       this.$refs.createModal.form.resetFields()
     },
+
+    // 编辑角色取消事件
     handleCancel() {
       this.createModal.visible = false
       this.$refs.createModal.form.resetFields()
     },
+
+    // 分配权限事件
     handleRolePrems(record) {
       this.giveRolePremsModal.visible = true
       this.giveRolePremsModal.model = {
         display_name: record.display_name,
-        id: record.id,
+        id: record.id
       }
     },
-    cancelGiveRole() {
-      this.giveRolePremsModal.visible = false
-    },
-    showConfirm(data) {
+
+    // 删除确认事件
+    deleteConfirm(data) {
       let _this = this
       this.$confirm({
         title: '确定删除该条角色信息吗？',
-        content: (h) => <div style="color:red;">删除后不可恢复</div>,
+        content: h => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
           return ServeDeleteRole({
-            role_id: data.id,
+            role_id: data.id
           })
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
                 _this.$message.success('角色删除成功...')
                 _this.handleRefresh()
@@ -200,12 +210,12 @@ export default {
                 _this.$message.error('角色删除失败...')
               }
             })
-            .catch((err) => {
+            .catch(err => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>

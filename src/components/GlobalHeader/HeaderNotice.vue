@@ -1,11 +1,11 @@
 <template>
-  <a-dropdown :trigger="['click']" v-model="show" placement="bottomCenter">
+  <a-dropdown :trigger="['click']" v-model="show" placement="bottomCenter" @visibleChange="visibleChange">
     <div slot="overlay">
       <a-spin :spinning="loading">
         <a-tabs class="dropdown-tabs" :tabBarStyle="{ textAlign: 'center' }" :style="{ width: '330px' }">
           <a-tab-pane tab="通知(4)" key="1">
             <a-list class="tab-pane">
-              <a-list-item v-for="notice in notices">
+              <a-list-item v-for="(notice, idx) in notices" :key="idx">
                 <a-list-item-meta :title="notice.title" :description="notice.description" />
               </a-list-item>
             </a-list>
@@ -23,9 +23,9 @@
         </a-tabs>
       </a-spin>
     </div>
-    <span @click="fetchNotice" class="header-notice">
+    <span class="header-notice">
       <a-badge class="notice-badge" count="12">
-        <a-icon :class="['header-notice-icon']" type="bell" />
+        <a-icon class="header-notice-icon" type="bell" />
       </a-badge>
     </span>
   </a-dropdown>
@@ -39,43 +39,39 @@ export default {
       loading: false,
       show: false,
 
-      notices:[
-          {
-              title:'任务名称',
-              description:'任务需要在 2017-01-12 20:00 前启动'
-          },
-          {
-              title:'第三方紧急代码变更',
-              description:'冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
-          },
-          {
-              title:'信息安全考试',
-              description:'指派竹尔于 2017-01-09 前完成更新并发布'
-          },
-          {
-              title:'ABCD 版本发布',
-              description:'冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
-          }
+      notices: [
+        {
+          title: '任务名称',
+          description: '任务需要在 2017-01-12 20:00 前启动'
+        },
+        {
+          title: '第三方紧急代码变更',
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
+        },
+        {
+          title: '信息安全考试',
+          description: '指派竹尔于 2017-01-09 前完成更新并发布'
+        },
+        {
+          title: 'ABCD 版本发布',
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
+        }
       ]
     }
   },
   computed: {},
   methods: {
-    fetchNotice() {
-      if (this.loading) {
-        this.loading = false
-        return
-      }
-      this.loadding = true
+    visibleChange() {
+      this.loading = true
       setTimeout(() => {
-        this.loadding = false
+        this.loading = false
       }, 1000)
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scope>
 .header-notice {
   display: inline-block;
   transition: all 0.3s;
@@ -90,11 +86,14 @@ export default {
     }
   }
 }
-.dropdown-tabs {
-  border-radius: 4px;
+
+.ant-dropdown-content {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
 
+.dropdown-tabs {
+  border-radius: 4px;
   .tab-pane {
     min-height: 250px;
   }

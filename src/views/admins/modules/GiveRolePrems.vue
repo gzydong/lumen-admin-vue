@@ -5,7 +5,7 @@
     :confirmLoading="loading"
     okText="立即分配"
     cancelText="取消"
-    @ok="ok"
+    @ok="submit"
     @cancel="cancel"
   >
     <a-spin :spinning="loading" tip="权限信息加载中...">
@@ -117,10 +117,10 @@ export default {
     fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
-    ok() {
+    submit() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.submit(values.id)
+          this.toSubmit(values.id)
         }
       })
     },
@@ -129,7 +129,7 @@ export default {
       this.resetTree()
       this.$emit('close')
     },
-    submit(role_id) {
+    toSubmit(role_id) {
       let permissions = [...this.checkedKeys, this.halfCheckedKeys].join(',')
       this.loading = true
       ServeGiveRolePerms({
@@ -151,7 +151,6 @@ export default {
           this.loading = false
         })
     },
-
     resetTree() {
       this.checkedKeys = []
       this.treeData = []

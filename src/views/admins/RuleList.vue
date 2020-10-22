@@ -3,7 +3,7 @@
     <a-card :bordered="false">
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
-        <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
+        <a-button type="primary" icon="plus" @click="handleAddRule">添加</a-button>
       </div>
 
       <s-table
@@ -27,20 +27,20 @@
             <a-divider type="vertical" />
           </template>
 
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEditRule(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="showConfirm(record)">删除</a>
+          <a @click="deleteConfirm(record)">删除</a>
         </span>
       </s-table>
 
       <!-- 创建角色及编辑角色窗口 -->
       <rule-form
-        ref="createModal"
-        :visible="createModal.visible"
-        :model="createModal.model"
+        ref="formModal"
+        :visible="formModal.visible"
+        :model="formModal.model"
         :tree="treeData"
         @cancel="handleCancel"
-        @success="handleOk"
+        @success="handleSuccess"
       />
     </a-card>
   </page-header-wrapper>
@@ -100,7 +100,7 @@ export default {
       },
 
       // 创建角色弹出层
-      createModal: {
+      formModal: {
         model: null,
         visible: false
       },
@@ -110,6 +110,7 @@ export default {
     }
   },
   methods: {
+    // 处理表格数据
     formatData(data) {
       data.rows.map(row => {
         row.key = row.id
@@ -120,40 +121,54 @@ export default {
       this.treeData = data.rows = formatTree(data.rows)
       return data
     },
-    handleAdd() {
-      this.$refs.createModal.form.resetFields()
-      this.createModal.visible = true
-      this.createModal.model = null
-    },
-    handleInsert(record) {
-      this.$refs.createModal.form.resetFields()
-      this.createModal.visible = true
-      this.$refs.createModal.setParentId(record.id)
-    },
+
+    // 刷新表格事件
     handleRefresh() {
       this.$refs.table.refresh()
     },
-    handleEdit(record) {
-      this.createModal.visible = true
-      this.createModal.model = {
+
+    // 添加权限事件
+    handleAddRule() {
+      this.$refs.formModal.form.resetFields()
+      this.formModal.visible = true
+      this.formModal.model = null
+    },
+
+    // 编辑权限事件
+    handleEditRule(record) {
+      this.formModal.visible = true
+      this.formModal.model = {
         id: record.id,
         type: record.type.toString(),
         route: record.route,
         rule_name: record.rule_name
       }
 
-      this.$refs.createModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
+      this.$refs.formModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
     },
-    handleOk() {
-      this.createModal.visible = false
+
+    // 节点新增权限事件
+    handleInsert(record) {
+      this.$refs.formModal.form.resetFields()
+      this.formModal.visible = true
+      this.$refs.formModal.setParentId(record.id)
+    },
+
+    // 表单编辑成功回调事件
+    handleSuccess() {
+      this.formModal.visible = false
       this.$refs.table.refresh()
-      this.$refs.createModal.form.resetFields()
+      this.$refs.formModal.form.resetFields()
     },
+
+    // 表单取消编辑回调事件
     handleCancel() {
-      this.createModal.visible = false
-      this.$refs.createModal.form.resetFields()
+      this.formModal.visible = false
+      this.$refs.formModal.form.resetFields()
     },
-    showConfirm(data) {
+
+    // 删除确认事件
+    deleteConfirm(data) {
       let _this = this
       this.$confirm({
         title: '确定删除该条权限信息吗？',

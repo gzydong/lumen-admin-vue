@@ -83,14 +83,13 @@ export default {
       form: this.$form.createForm(this)
     }
   },
-  created() {
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
+  watch: {
+    model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-    })
+    }
+  },
+  created() {
+    fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
     ok() {

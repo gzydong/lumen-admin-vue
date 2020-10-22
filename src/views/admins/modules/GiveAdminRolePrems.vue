@@ -5,7 +5,7 @@
     :confirmLoading="loading"
     okText="立即分配"
     cancelText="取消"
-    @ok="ok"
+    @ok="submit"
     @cancel="cancel"
   >
     <a-spin :spinning="loading" tip="权限信息加载中...">
@@ -45,6 +45,7 @@ import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms, ServeGetAdminPerms, ServeGiveAdminPerms } from '@/api/rbac'
 
 import { formatTree, uniqueArr } from '@/utils/util'
+
 // 表单字段
 const fields = ['admin_id', 'admin_name', 'role_id']
 
@@ -95,7 +96,61 @@ export default {
       this.form.resetFields()
       this.model && this.form.setFieldsValue(pick(this.model, fields))
       this.resetTree()
+      this.loadTree()
+    }
+  },
+  created() {
+    fields.forEach(v => this.form.getFieldDecorator(v))
+  },
+  methods: {
+    submit() {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.toSubmit(values)
+        }
+      })
+    },
+    cancel() {
+      this.loading = false
+      this.resetTree()
+      this.$emit('close')
+    },
+    toSubmit(values) {
+      let permissions = [...this.checkedKeys, this.halfCheckedKeys].join(',')
+      this.loading = true
+      ServeGiveAdminPerms({
+        admin_id: values.admin_id,
+        role_id: values.role_id,
+        permissions
+      })
+        .then(res => {
+          if (res.code == 200) {
+            this.$message.success('角色分配权限成功...')
+            this.$emit('close')
+          } else {
+            this.$message.error('角色分配权限失败...')
+          }
+        })
+        .catch(err => {
+          this.$message.error('网络异常,请稍后再试...')
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
 
+    // 清空权限数据
+    resetTree() {
+      this.checkedKeys = []
+      this.treeData = []
+    },
+
+    onCheck(checkedKeys, info) {
+      this.halfCheckedKeys = info.halfCheckedKeys
+    },
+
+    // 加载权限信息
+    loadTree() {
       ServeGetAdminPerms({
         admin_id: this.model.admin_id
       }).then(res => {
@@ -129,55 +184,6 @@ export default {
           })
         }
       })
-    }
-  },
-  created() {
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-  },
-  methods: {
-    ok() {
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.submit(values)
-        }
-      })
-    },
-    cancel() {
-      this.loading = false
-      this.resetTree()
-      this.$emit('close')
-    },
-    submit(values) {
-      let permissions = [...this.checkedKeys, this.halfCheckedKeys].join(',')
-      this.loading = true
-      ServeGiveAdminPerms({
-        admin_id: values.admin_id,
-        role_id: values.role_id,
-        permissions
-      })
-        .then(res => {
-          if (res.code == 200) {
-            this.$message.success('角色分配权限成功...')
-            this.$emit('close')
-          } else {
-            this.$message.error('角色分配权限失败...')
-          }
-        })
-        .catch(err => {
-          this.$message.error('网络异常,请稍后再试...')
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-
-    resetTree() {
-      this.checkedKeys = []
-      this.treeData = []
-    },
-    onCheck(checkedKeys, info) {
-      this.halfCheckedKeys = info.halfCheckedKeys
     }
   }
 }

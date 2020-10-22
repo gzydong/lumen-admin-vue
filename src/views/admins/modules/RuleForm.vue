@@ -6,7 +6,7 @@
     :confirmLoading="loading"
     :okText="model ? '立即编辑' : '立即添加'"
     cancelText="取消"
-    @ok="ok"
+    @ok="submit"
     @cancel="cancel"
   >
     <a-spin :spinning="loading">
@@ -45,7 +45,7 @@
           <a-input
             placeholder="请填写权限路由"
             v-decorator="['route', { rules: [{ required: true, message: '权限路由不能为空！' }] }]"
-            @keyup.native.enter="ok"
+            @keyup.native.enter="submit"
           />
         </a-form-item>
       </a-form>
@@ -116,7 +116,7 @@ export default {
     fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
-    ok() {
+    submit() {
       this.loading = true
       let _this = this
       this.form.validateFields((errors, values) => {
@@ -135,7 +135,6 @@ export default {
     cancel() {
       this.$emit('cancel')
     },
-
     setParentId(parent_id) {
       this.parent_id = parent_id
     },
@@ -155,7 +154,6 @@ export default {
           this.loading = false
         })
     },
-
     edit(values) {
       ServeEditPerms(values)
         .then(res => {

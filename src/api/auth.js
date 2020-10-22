@@ -3,8 +3,8 @@ import {
 } from '@/utils/request';
 
 const API_LISTS = {
-  login: '/auth/login',
-  logout: '/auth/logout'
+  login: 'admin/auth/login',
+  logout: 'admin/auth/logout'
 }
 
 /**

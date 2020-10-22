@@ -6,7 +6,7 @@
     :confirmLoading="loading"
     okText="立即修改"
     cancelText="取消"
-    @ok="ok"
+    @ok="submit"
     @cancel="cancel"
   >
     <a-spin :spinning="loading">
@@ -27,7 +27,7 @@
             type="password"
             placeholder="请填写登录密码"
             v-decorator="['password', { rules: [{ required: true, message: '密码不能为空！' }] }]"
-            @keyup.native.enter="ok"
+            @keyup.native.enter="submit"
           />
         </a-form-item>
         <a-form-item label="确认密码">
@@ -38,7 +38,7 @@
               'password2',
               { rules: [{ required: true, message: '确认密码不能为空！' }, { validator: compareToFirstPassword }] }
             ]"
-            @keyup.native.enter="ok"
+            @keyup.native.enter="submit"
           />
         </a-form-item>
       </a-form>
@@ -89,17 +89,16 @@ export default {
       form: this.$form.createForm(this)
     }
   },
-  created() {
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
+  watch: {
+    model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-    })
+    }
+  },
+  created() {
+    fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
-    ok() {
+    submit() {
       this.loading = true
       this.form.validateFields((errors, values) => {
         if (!errors) {
@@ -125,6 +124,8 @@ export default {
     cancel() {
       this.$emit('cancel')
     },
+
+    // 确认密码验证事件
     compareToFirstPassword(rule, value, callback) {
       const form = this.form
       if (value && value !== form.getFieldValue('password')) {

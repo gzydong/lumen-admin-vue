@@ -40,7 +40,7 @@ const errorHandler = (error) => {
       });
     } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.warning({
-        message: 'Unauthorized',
+        message: '授权提示',
         description: 'Authorization verification failed'
       });
 

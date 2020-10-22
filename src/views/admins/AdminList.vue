@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper :title="false">
+  <page-header-wrapper>
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -31,18 +31,7 @@
       <!-- 表格操作 -->
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
-        <a-button type="primary" icon="plus" @click="handleAdd">添加</a-button>
-        <a-dropdown v-if="selectedRowKeys.length > 0">
-          <a-menu slot="overlay">
-            <a-menu-item key="2"> <a-icon type="check-circle" />启用</a-menu-item>
-            <a-menu-item key="1"> <a-icon type="stop" />禁用</a-menu-item>
-            <a-menu-item key="1"> <a-icon type="delete" />删除</a-menu-item>
-          </a-menu>
-          <a-button style="margin-left: 8px">
-            批量操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+        <a-button type="primary" icon="plus" @click="handleAddAdmin">添加</a-button>
       </div>
 
       <!-- Table 模板配置 -->
@@ -52,21 +41,32 @@
         rowKey="id"
         :columns="columns"
         :data="loadData"
-        :alert="true"
-        :rowSelection="rowSelection"
         :showPagination="true"
         :scroll="{ x: 1200 }"
       >
-        <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+        <template slot="statusTitle">
+          状态
+          <a-tooltip title="【禁用】状态不能进行登录">
+            <a-icon type="question-circle" />
+          </a-tooltip>
+        </template>
+
+        <span slot="status" slot-scope="text, record">
+          {{ text | statusFilter }}
+          <a @click="updateStatus(record)">[修改]</a>
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleSub(record)">分配权限</a>
-            <a-divider type="vertical" />
-            <a @click="handleResetPassword(record)">重置密码</a>
-          </template>
+          <a>编辑</a>
+          <a-divider type="vertical" />
+          <a-dropdown placement="bottomCenter" :trigger="['click']">
+            <a-menu slot="overlay">
+              <a-menu-item @click="handleGiveAdminRole(record)"><a>分配权限</a></a-menu-item>
+              <a-menu-item @click="handleResetPassword(record)"><a>设置密码</a></a-menu-item>
+              <a-menu-item @click="deleteConfirm(record)"><a>删除账号</a></a-menu-item>
+            </a-menu>
+            <a>更多<a-icon type="down"/></a>
+          </a-dropdown>
         </span>
       </s-table>
 
@@ -76,7 +76,7 @@
         :visible="createAdmin.visible"
         :model="createAdmin.model"
         @cancel="() => (this.createAdmin.visible = false)"
-        @success="handleAddOk"
+        @success="addSuccessCallback"
       />
 
       <!-- 重置密码窗口 -->
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { ServeGetAdmins } from '@/api/user'
+import { ServeGetAdmins, ServeDeleteAdmin, ServeUpdateAdminStatus } from '@/api/user'
 
 import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'
@@ -108,7 +108,7 @@ import GiveAdminRolePrems from './modules/GiveAdminRolePrems'
 const statusMap = {
   0: {
     status: 'default',
-    text: '已禁用'
+    text: '禁用'
   },
   10: {
     status: 'processing',
@@ -117,7 +117,7 @@ const statusMap = {
 }
 
 export default {
-  name: 'TableList',
+  name: 'AdminsList',
   components: {
     AdminForm,
     ResetPasswordFrom,
@@ -127,19 +127,23 @@ export default {
     return {
       columns: [
         {
+          title: 'ID',
+          dataIndex: 'id',
+          width: '80px'
+        },
+        {
           title: '登录账号',
           dataIndex: 'username'
         },
         {
-          title: '邮箱',
+          title: '邮箱地址',
           dataIndex: 'email',
-          customRender: (text, record, index) => {
-            return text == '' ? '-' : text
-          }
+          customRender: text => (text == '' ? '-' : text)
         },
         {
-          title: '状态',
+          // title: '账号状态',
           dataIndex: 'status',
+          slots: { title: 'statusTitle' },
           scopedSlots: {
             customRender: 'status'
           }
@@ -160,9 +164,7 @@ export default {
           title: '最后登录IP',
           dataIndex: 'last_login_ip',
           align: 'center',
-          customRender: (text, record, index) => {
-            return text == '' ? '-' : text
-          }
+          customRender: text => (text == '' ? '-' : text)
         },
         {
           title: '操作',
@@ -184,8 +186,6 @@ export default {
           return res.data
         })
       },
-      selectedRowKeys: [],
-      selectedRows: [],
 
       // 创建管理员模块
       createAdmin: {
@@ -209,21 +209,16 @@ export default {
   filters: {
     statusFilter(type) {
       return statusMap[type].text
-    },
-    statusTypeFilter(type) {
-      return statusMap[type].status
-    }
-  },
-  computed: {
-    rowSelection() {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
     }
   },
   methods: {
-    handleAdd() {
+    // 表格刷新
+    handleRefresh() {
+      this.$refs.table.refresh()
+    },
+
+    // 添加管理员
+    handleAddAdmin() {
       this.createAdmin.visible = true
       this.createAdmin.model = {
         id: 0,
@@ -232,14 +227,15 @@ export default {
         password2: ''
       }
     },
-    handleAddOk() {
+
+    // 添加管理员成功回调事件
+    addSuccessCallback() {
       this.createAdmin.visible = false
       this.queryParam = {}
       this.$refs.table.refresh(true)
     },
-    handleRefresh() {
-      this.$refs.table.refresh()
-    },
+
+    // 修改管理员密码
     handleResetPassword(record) {
       this.passwordModal.visible = true
       this.passwordModal.model = {
@@ -249,16 +245,75 @@ export default {
         password2: ''
       }
     },
-    handleSub(record) {
+
+    // 分配管理员角色
+    handleGiveAdminRole(record) {
       this.giveAdminRolePremsModal.visible = true
       this.giveAdminRolePremsModal.model = {
         admin_id: record.id,
         admin_name: record.username
       }
     },
-    onSelectChange(selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
+
+    // 修改管理员状态
+    updateStatus(data) {
+      let _this = this
+
+      let title = ''
+      let status = 0
+      if (data.status == 10) {
+        title = `确认要修改 [${data.username}] 账号状态为 【禁用】吗？`
+        status = 1
+      } else {
+        title = `确认要修改 [${data.username}] 账号状态为 【正常】吗？`
+        status = 0
+      }
+
+      this.$confirm({
+        title,
+        onOk() {
+          return ServeUpdateAdminStatus({
+            admin_id: data.id,
+            status
+          })
+            .then(res => {
+              if (res.code == 200) {
+                _this.$message.success('管理员状态已成功修改...')
+                _this.handleRefresh()
+              } else {
+                _this.$message.error('管理员状态修改失败...')
+              }
+            })
+            .catch(err => {
+              _this.$message.error('网络异常，请稍后再试...')
+            })
+        }
+      })
+    },
+
+    // 删除管理员
+    deleteConfirm(data) {
+      let _this = this
+      this.$confirm({
+        title: `您确定要删除[${data.username}]这个账号吗？`,
+        okText: '立即删除',
+        onOk() {
+          return ServeDeleteAdmin({
+            admin_id: data.id
+          })
+            .then(res => {
+              if (res.code == 200) {
+                _this.$message.success(` [${data.username}] 账号已删除...`)
+                _this.handleRefresh()
+              } else {
+                _this.$message.error(` [${data.username}] 账号删除失败...`)
+              }
+            })
+            .catch(err => {
+              _this.$message.error('网络异常，请稍后再试...')
+            })
+        }
+      })
     }
   }
 }

@@ -63,6 +63,16 @@ export const asyncRouterMap = [{
         }
       }]
     },
+    {
+      path: '/other',
+      name: 'component',
+      component: () => import('@/views/other/component'),
+      meta: {
+        icon: 'tool',
+        title: '自定义组件',
+        keepAlive: false,
+      }
+    }
   ]
 }];
 

@@ -6,9 +6,11 @@ import {
 // 接口列表
 const API_LISTS = {
   // 管理员相关接口
-  admins: '/admins/lists',
-  create_admin: '/admins/create',
-  update_password: '/admins/update-password',
+  admins: 'admin/admins/lists',
+  create_admin: 'admin/admins/create',
+  delete_admin: 'admin/admins/delete',
+  update_password: 'admin/admins/update-password',
+  update_status: 'admin/admins/update-status',
 }
 
 /**
@@ -35,10 +37,30 @@ export function ServeCreateAdmin(data) {
 }
 
 /**
+ * 删除管理员服务接口
+ * 
+ * @param {*} data 请求数据
+ */
+export function ServeDeleteAdmin(data) {
+  return post(API_LISTS.delete_admin, data);
+}
+
+
+
+/**
  * 修改管理员服务接口
  * 
  * @param {*} data 请求数据
  */
 export function ServeUpdateAdminPassword(data) {
   return post(API_LISTS.update_password, data);
+}
+
+/**
+ * 修改管理员服务接口
+ * 
+ * @param {*} data 请求数据
+ */
+export function ServeUpdateAdminStatus(data) {
+  return post(API_LISTS.update_status, data);
 }

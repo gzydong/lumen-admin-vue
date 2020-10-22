@@ -1,7 +1,7 @@
 <template>
   <div :class="wrpCls">
     <!-- 消息通知提示 -->
-    <header-notice :class="prefixCls" />
+    <header-notice :class="prefixCls"  />
 
     <!-- 用户设置 -->
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
