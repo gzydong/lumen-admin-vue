@@ -11,6 +11,9 @@ const API_LISTS = {
   delete_admin: 'admin/admins/delete',
   update_password: 'admin/admins/update-password',
   update_status: 'admin/admins/update-status',
+  admin_detail:'admin/account/detail',
+  admin_update_detail:'admin/account/update-account',
+  admin_update_password:'admin/account/update-password',
 }
 
 /**
@@ -64,3 +67,31 @@ export function ServeUpdateAdminPassword(data) {
 export function ServeUpdateAdminStatus(data) {
   return post(API_LISTS.update_status, data);
 }
+
+
+/**
+ * 退出登录服务接口
+ */
+export function ServeGetAdminDetail() {
+  return get(API_LISTS.admin_detail);
+}
+
+
+
+/**
+ * 修改当前登录用户信息服务接口
+ */
+export function ServeUpdateAdminDetail(data) {
+  return post(API_LISTS.admin_update_detail,data);
+}
+
+
+/**
+ * 修改当前登录用户密码服务接口
+ */
+export function ServeUpdatePassword(data) {
+  return post(API_LISTS.admin_update_password,data);
+}
+
+
+

@@ -17,7 +17,7 @@ const locale = {
   'app.setting.pagestyle': '整体风格设置',
   'app.setting.pagestyle.light': '亮色菜单风格',
   'app.setting.pagestyle.dark': '暗色菜单风格',
-  'app.setting.pagestyle.realdark': 'RealDark style',
+  'app.setting.pagestyle.realdark': '暗色菜单风格',
   'app.setting.themecolor': '主题色',
   'app.setting.themecolor.daybreak': '拂晓篮(默认)',
   'app.setting.themecolor.dust': 'dust',

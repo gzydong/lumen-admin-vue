@@ -72,6 +72,62 @@ export const asyncRouterMap = [{
         title: '自定义组件',
         keepAlive: false,
       }
+    },
+    // account
+    {
+      path: '/account',
+      component: RouteView,
+      redirect: '/account/settings',
+      name: 'account',
+      hidden:true,
+      meta: {
+        title: '个人页',
+        icon: 'user',
+        keepAlive: true,
+        permission: ['user']
+      },
+      children: [
+        {
+          path: '/account/settings',
+          name: 'settings',
+          component: () => import('@/views/account/settings/Index'),
+          meta: {
+            title: '个人设置',
+            hideHeader: true,
+            permission: ['user']
+          },
+          redirect: '/account/settings/base',
+          hideChildrenInMenu: true,
+          children: [{
+              path: '/account/settings/base',
+              name: 'BaseSettings',
+              component: () => import('@/views/account/settings/BaseSetting'),
+              meta: {
+                title: '基本设置',
+                hidden: true
+              }
+            },
+            {
+              path: '/account/settings/security',
+              name: 'SecuritySettings',
+              component: () => import('@/views/account/settings/Security'),
+              meta: {
+                title: '安全设置',
+                hidden: true
+              }
+            },
+            {
+              path: '/account/settings/password',
+              name: 'SettingPassword',
+              component: () => import('@/views/account/settings/SettingPassword'),
+              meta: {
+                title: '设置密码',
+                hidden: true
+              }
+            },
+          ]
+        }
+      ]
     }
   ]
 }];

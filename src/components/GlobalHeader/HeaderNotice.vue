@@ -42,32 +42,35 @@ export default {
       notices: [
         {
           title: '任务名称',
-          description: '任务需要在 2017-01-12 20:00 前启动'
+          description: '任务需要在 2017-01-12 20:00 前启动',
         },
         {
           title: '第三方紧急代码变更',
-          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
         },
         {
           title: '信息安全考试',
-          description: '指派竹尔于 2017-01-09 前完成更新并发布'
+          description: '指派竹尔于 2017-01-09 前完成更新并发布',
         },
         {
           title: 'ABCD 版本发布',
-          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
-        }
-      ]
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
+        },
+      ],
     }
   },
   computed: {},
   methods: {
     visibleChange() {
-      this.loading = true
-      setTimeout(() => {
-        this.loading = false
-      }, 1000)
-    }
-  }
+      if (!this.loading) {
+        this.loading = true
+
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
+      }
+    },
+  },
 }
 </script>
 

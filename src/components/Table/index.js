@@ -11,6 +11,7 @@ export default {
 
       localLoading: false,
       localDataSource: [],
+      
       localPagination: Object.assign({}, this.pagination)
     }
   },
@@ -39,12 +40,6 @@ export default {
       type: String,
       default: 'default'
     },
-    /**
-     * alert: {
-     *   show: true,
-     *   clear: Function
-     * }
-     */
     alert: {
       type: [Object, Boolean],
       default: null
@@ -53,40 +48,22 @@ export default {
       type: Object,
       default: null
     },
-    /** @Deprecated */
-    showAlertInfo: {
-      type: Boolean,
-      default: false
-    },
+    // 是否显示分页
     showPagination: {
       type: String | Boolean,
       default: 'auto'
     },
-    /**
-     * enable page URI mode
-     *
-     * e.g:
-     * /users/1
-     * /users/2
-     * /users/3?queryParam=test
-     * ...
-     */
-    pageURI: {
+    // 是否显示分页跳转
+    showPageJump: {
       type: Boolean,
       default: false
     }
   }),
   watch: {
     'localPagination.current' (val) {
-      this.pageURI && this.$router.push({
-        ...this.$route,
-        name: this.$route.name,
-        params: Object.assign({}, this.$route.params, {
-          page: val
-        })
-      })
       // change pagination, reset total data
       this.needTotalList = this.initTotalList(this.columns)
+
       this.selectedRowKeys = []
       this.selectedRows = []
     },
@@ -107,13 +84,13 @@ export default {
     }
   },
   created () {
-    const { page } = this.$route.params
-    const localPageNum = this.pageURI && (page && parseInt(page)) || this.pageNum
     this.localPagination = ['auto', true].includes(this.showPagination) && Object.assign({}, this.localPagination, {
-      current: localPageNum,
+      current: this.pageNum,
       page_size: this.page_size,
-      showSizeChanger: this.showSizeChanger
+      showSizeChanger: this.showSizeChanger,
+      showQuickJumper:this.showPageJump
     }) || false
+
     this.needTotalList = this.initTotalList(this.columns)
     this.loadData()
   },
@@ -141,6 +118,7 @@ export default {
     loadData (pagination, filters, sorter) {
       this.localLoading = true
 
+      // 处理接口请求数据
       const parameter = Object.assign({
         page: (pagination && pagination.current) ||
           this.showPagination && this.localPagination.current || this.pageNum,
@@ -161,13 +139,13 @@ export default {
       const result = this.data(parameter)
 
       // 对接自己的通用数据接口需要修改下方代码中的 r.page, r.total, r.rows
-      // eslint-disable-next-line
       if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
         result.then(r => {
           this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
             current: r.page, // 返回结果中的当前分页数
             total: r.total, // 返回结果中的总记录数
             showSizeChanger: this.showSizeChanger,
+            showQuickJumper:this.showPageJump,
             page_size: (pagination && pagination.page_size) ||
               this.localPagination.page_size
           }) || false
@@ -328,7 +306,7 @@ export default {
     })
 
     const table = (
-      <a-table ref="meTable" {...{ props, scopedSlots: { ...this.$scopedSlots } }} onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
+      <a-table {...{ props, scopedSlots: { ...this.$scopedSlots } }}  onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
         { Object.keys(this.$slots).map(name => (<template slot={name}>{this.$slots[name]}</template>)) }
       </a-table>
     )

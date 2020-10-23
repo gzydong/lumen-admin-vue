@@ -41,7 +41,7 @@ const errorHandler = (error) => {
     } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.warning({
         message: '授权提示',
-        description: 'Authorization verification failed'
+        description: '授权登录已失效，请重新登录！'
       });
 
       if (token) {
