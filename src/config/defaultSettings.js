@@ -9,9 +9,7 @@
  * contentWidth - 内容区布局： 流式 |  固定
  *
  * storageOptions: {} - Vue-ls 插件配置项 (localStorage/sessionStorage)
- *
  */
-
 export default {
   navTheme: 'dark', // theme for nav menu
   primaryColor: '#1890ff', // primary color of ant design
@@ -20,11 +18,6 @@ export default {
   fixedHeader: true, // sticky header
   fixSiderbar: true, // sticky siderbar
   colorWeak: false,
-  menu: {
-    locale: true
-  },
   title: 'Lumen CMS',
-  pwa: false,
-  iconfontUrl: '',
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true'
 }

@@ -13,10 +13,10 @@
                   rules: [
                     {
                       required: true,
-                      message: '旧密码不能为空！',
-                    },
-                  ],
-                },
+                      message: '旧密码不能为空！'
+                    }
+                  ]
+                }
               ]"
             />
           </a-form-item>
@@ -30,14 +30,14 @@
                   rules: [
                     {
                       required: true,
-                      message: '请设置新的登录密码!',
+                      message: '请设置新的登录密码!'
                     },
                     {
                       min: 6,
-                      message: '密码最小6位数!',
-                    },
-                  ],
-                },
+                      message: '密码最小6位数!'
+                    }
+                  ]
+                }
               ]"
             />
           </a-form-item>
@@ -51,11 +51,11 @@
                   rules: [
                     {
                       required: true,
-                      message: '确认密码不能为空！',
+                      message: '确认密码不能为空！'
                     },
-                    { validator: compareToFirstPassword },
-                  ],
-                },
+                    { validator: compareToFirstPassword }
+                  ]
+                }
               ]"
             />
           </a-form-item>
@@ -71,12 +71,11 @@
 <script>
 import { ServeUpdatePassword } from '@/api/user'
 
-import pick from 'lodash.pick'
 export default {
   data() {
     return {
       form: this.$form.createForm(this),
-      loading: false,
+      loading: false
     }
   },
   methods: {
@@ -101,7 +100,7 @@ export default {
     saveDetail(data) {
       this.loading = true
       ServeUpdatePassword(data)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$message.success('密码更新成功...')
             this.form.resetFields()
@@ -109,14 +108,14 @@ export default {
             this.$message.error('原始密码填写错误...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常，请稍后再试...')
         })
         .finally(() => {
           this.loading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>
 

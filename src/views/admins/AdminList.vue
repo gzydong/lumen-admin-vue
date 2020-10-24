@@ -68,7 +68,7 @@
               <a-menu-item @click="handleResetPassword(record)"><a>设置密码</a></a-menu-item>
               <a-menu-item @click="deleteConfirm(record)"><a>删除账号</a></a-menu-item>
             </a-menu>
-            <a>更多<a-icon type="down" /></a>
+            <a>更多<a-icon type="down"/></a>
           </a-dropdown>
         </span>
       </s-table>
@@ -116,12 +116,12 @@ import FooterToolBar from '@/components/FooterToolbar'
 const statusMap = {
   0: {
     status: 'default',
-    text: '禁用',
+    text: '禁用'
   },
   10: {
     status: 'processing',
-    text: '正常',
-  },
+    text: '正常'
+  }
 }
 
 export default {
@@ -130,7 +130,7 @@ export default {
     AdminForm,
     ResetPasswordFrom,
     GiveAdminRolePrems,
-    FooterToolBar,
+    FooterToolBar
   },
   data() {
     return {
@@ -138,42 +138,47 @@ export default {
         {
           title: 'ID',
           dataIndex: 'id',
-          width: '80px',
+          width: '80px'
         },
         {
           title: '登录账号',
-          dataIndex: 'username',
+          dataIndex: 'username'
+        },
+        {
+          title: '昵称',
+          dataIndex: 'nickname',
+          customRender: text => (text == '' ? '-' : text)
         },
         {
           title: '邮箱地址',
           dataIndex: 'email',
-          customRender: (text) => (text == '' ? '-' : text),
+          customRender: text => (text == '' ? '-' : text)
         },
         {
           // title: '账号状态',
           dataIndex: 'status',
           slots: { title: 'statusTitle' },
           scopedSlots: {
-            customRender: 'status',
-          },
+            customRender: 'status'
+          }
         },
         {
           title: '创建时间',
           dataIndex: 'created_at',
           align: 'center',
-          sorter: true,
+          sorter: true
         },
         {
           title: '最后登录时间',
           dataIndex: 'last_login_time',
           sorter: true,
-          align: 'center',
+          align: 'center'
         },
         {
           title: '最后登录IP',
           dataIndex: 'last_login_ip',
           align: 'center',
-          customRender: (text) => (text == '' ? '-' : text),
+          customRender: text => (text == '' ? '-' : text)
         },
         {
           title: '操作',
@@ -181,17 +186,17 @@ export default {
           width: '200px',
           align: 'right',
           scopedSlots: {
-            customRender: 'action',
-          },
-        },
+            customRender: 'action'
+          }
+        }
       ],
 
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetAdmins(data).then((res) => {
+        return ServeGetAdmins(data).then(res => {
           return res.data
         })
       },
@@ -199,40 +204,37 @@ export default {
       // 创建管理员模块
       createAdmin: {
         visible: false,
-        model: null,
+        model: null
       },
 
       // 修改密码模块
       passwordModal: {
         visible: false,
-        model: null,
+        model: null
       },
 
       // 分配角色权限弹出层
       giveAdminRolePremsModal: {
         model: null,
-        visible: false,
+        visible: false
       },
 
       selectedRowKeys: [],
-      selectedRows: [],
+      selectedRows: []
     }
   },
   filters: {
     statusFilter(type) {
       return statusMap[type].text
-    },
+    }
   },
   computed: {
     rowSelection() {
       return {
         selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange,
+        onChange: this.onSelectChange
       }
-    },
-  },
-  created(){
-    console.log(this)
+    }
   },
   methods: {
     // 表格刷新
@@ -247,7 +249,7 @@ export default {
         id: 0,
         username: '',
         password: '',
-        password2: '',
+        password2: ''
       }
     },
 
@@ -265,7 +267,7 @@ export default {
         id: record.id,
         username: record.username,
         password: '',
-        password2: '',
+        password2: ''
       }
     },
 
@@ -274,7 +276,7 @@ export default {
       this.giveAdminRolePremsModal.visible = true
       this.giveAdminRolePremsModal.model = {
         admin_id: record.id,
-        admin_name: record.username,
+        admin_name: record.username
       }
     },
 
@@ -297,9 +299,9 @@ export default {
         onOk() {
           return ServeUpdateAdminStatus({
             admin_id: data.id,
-            status,
+            status
           })
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
                 _this.$message.success('管理员状态已成功修改...')
                 _this.handleRefresh()
@@ -307,10 +309,10 @@ export default {
                 _this.$message.error('管理员状态修改失败...')
               }
             })
-            .catch((err) => {
+            .catch(err => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        },
+        }
       })
     },
 
@@ -322,9 +324,9 @@ export default {
         okText: '立即删除',
         onOk() {
           return ServeDeleteAdmin({
-            admin_id: data.id,
+            admin_id: data.id
           })
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
                 _this.$message.success(` [${data.username}] 账号已删除...`)
                 _this.handleRefresh()
@@ -332,10 +334,10 @@ export default {
                 _this.$message.error(` [${data.username}] 账号删除失败...`)
               }
             })
-            .catch((err) => {
+            .catch(err => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        },
+        }
       })
     },
 
@@ -343,6 +345,6 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     }
-  },
+  }
 }
 </script>

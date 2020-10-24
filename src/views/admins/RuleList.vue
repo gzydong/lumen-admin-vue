@@ -1,6 +1,13 @@
 <template>
   <page-header-wrapper :title="false">
     <a-card :bordered="false">
+      <a-alert
+        message="友情提示："
+        description="1、权限类型为【菜单】时，请确保权限路由为前端管理页面的相对路径；2、权限类型为【权限】时，请确保权限路由为后端接口的相对路径；3、权限路由请确保在数据库中的唯一性；"
+        type="info"
+        class="cms-mgbt15"
+      />
+
       <div class="table-operator">
         <a-button type="primary" icon="sync" @click="handleRefresh"></a-button>
         <a-button type="primary" icon="plus" @click="handleAddRule">添加</a-button>
@@ -26,7 +33,6 @@
             <a @click="handleInsert(record)">新增</a>
             <a-divider type="vertical" />
           </template>
-
           <a @click="handleEditRule(record)">编辑</a>
           <a-divider type="vertical" />
           <a @click="deleteConfirm(record)">删除</a>

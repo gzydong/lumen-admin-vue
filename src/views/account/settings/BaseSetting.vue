@@ -18,14 +18,14 @@
                   rules: [
                     {
                       type: 'email',
-                      message: 'The input is not valid E-mail!',
-                    },
-                  ],
-                },
+                      message: 'The input is not valid E-mail!'
+                    }
+                  ]
+                }
               ]"
             />
           </a-form-item>
-          <a-form-item label="个人简介">
+          <a-form-item label="个人简介(预留)">
             <a-textarea
               rows="4"
               placeholder="填写个人简介(非必填)..."
@@ -35,10 +35,10 @@
                   rules: [
                     {
                       max: 180,
-                      message: '个人简介控制在180个字符以内...',
-                    },
-                  ],
-                },
+                      message: '个人简介控制在180个字符以内...'
+                    }
+                  ]
+                }
               ]"
             />
           </a-form-item>
@@ -69,7 +69,7 @@ import { ServeGetAdminDetail, ServeUpdateAdminDetail } from '@/api/user'
 import pick from 'lodash.pick'
 export default {
   components: {
-    AvatarModal,
+    AvatarModal
   },
   data() {
     return {
@@ -77,27 +77,22 @@ export default {
       loading: false,
       username: '',
       option: {
-        username: '',
-        nickname: '',
-        email: '',
-        profile: '',
-        avatar: '',
-        img: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-      },
+        img: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+      }
     }
   },
   created() {
     const fields = ['nickname', 'email', 'profile']
 
     ServeGetAdminDetail()
-      .then((res) => {
+      .then(res => {
         if (res.code == 200) {
           let result = res.data
           this.username = result.username
           this.form.setFieldsValue(pick(result, fields))
         }
       })
-      .catch((err) => {
+      .catch(err => {
         this.$message.error('网络异常，请稍后再试...')
       })
   },
@@ -118,21 +113,21 @@ export default {
       this.loading = true
       data.avatar = ''
       ServeUpdateAdminDetail(data)
-        .then((res) => {
+        .then(res => {
           if (res.code == 200) {
             this.$message.success('信息更新成功...')
           } else {
             this.$message.error('信息更新失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常，请稍后再试...')
         })
         .finally(() => {
           this.loading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -15,7 +15,6 @@
       <template v-if="item.actions">
         <a slot="actions" @click="item.actions.callback">{{ item.actions.title }}</a>
       </template>
-
     </a-list-item>
   </a-list>
 </template>

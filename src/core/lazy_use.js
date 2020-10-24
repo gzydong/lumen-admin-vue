@@ -47,9 +47,9 @@ import {
   notification,
   Tree
 } from 'ant-design-vue'
-import Viser from 'viser-vue'
 
 // ext library
+import Viser from 'viser-vue'
 import VueCropper from 'vue-cropper'
 import Dialog from '@/components/Dialog'
 import MultiTab from '@/components/MultiTab'
