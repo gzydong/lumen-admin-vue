@@ -38,8 +38,8 @@ import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mu
 
 import defaultSettings from '@/config/defaultSettings'
 import RightContent from '@/components/GlobalHeader/RightContent'
-import LogoSvg from '@/assets/logo.svg?inline'
-import { asyncRouterMap } from '@/config/router.config.js'
+import { LogoSvg } from '@/core/icons'
+import { asyncRouterMap } from '@/config/router.config'
 
 export default {
   name: 'BasicLayout',
@@ -83,19 +83,16 @@ export default {
       isMobile: false
     }
   },
-  computed: {
-    ...mapState({
-      // 动态主路由
-      mainMenu: state => state.permission.addRouters
-    })
-  },
   created() {
     const routes = asyncRouterMap.find(item => item.path === '/')
+
     this.menus = (routes && routes.children) || []
+
     // 处理侧栏收起状态
     this.$watch('collapsed', () => {
       this.$store.commit(SIDEBAR_TYPE, this.collapsed)
     })
+
     this.$watch('isMobile', () => {
       this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
     })

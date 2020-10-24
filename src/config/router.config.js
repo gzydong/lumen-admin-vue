@@ -1,6 +1,4 @@
-import {
-  BasicLayout
-} from '@/layouts';
+import { BasicLayout, BlankLayout, PageView } from '@/layouts'
 
 const RouteView = {
   name: 'RouteView',

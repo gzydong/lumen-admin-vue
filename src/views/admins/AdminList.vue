@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :title="false">
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -155,7 +155,6 @@ export default {
           customRender: text => (text == '' ? '-' : text)
         },
         {
-          // title: '账号状态',
           dataIndex: 'status',
           slots: { title: 'statusTitle' },
           scopedSlots: {

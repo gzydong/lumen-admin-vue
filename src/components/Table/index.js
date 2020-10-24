@@ -170,7 +170,6 @@ export default {
           // 返回结果中的数组数据
           this.localDataSource = r.rows 
           this.locale.emptyText = null
-          this.localLoading = false
         }).catch(err=>{
           let response = err.response;
 
@@ -184,7 +183,7 @@ export default {
               description: '服务器异常,请稍后再试...'
             });
           }
-
+        }).finally(()=>{
           this.localLoading = false;
         })
       }
