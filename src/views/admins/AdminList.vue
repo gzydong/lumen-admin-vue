@@ -100,7 +100,7 @@
     </a-card>
 
     <!-- fixed footer toolbar -->
-    <footer-tool-bar :is-mobile="false" v-show="selectedRows.length > 0">
+    <footer-tool-bar :is-mobile="isMobile" extra="扩展信息提示" v-show="selectedRows.length > 0">
       <a-button type="primary">批量删除({{ selectedRows.length }})</a-button>
     </footer-tool-bar>
   </page-header-wrapper>
@@ -113,6 +113,8 @@ import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'
 import GiveAdminRolePrems from './modules/GiveAdminRolePrems'
 import FooterToolBar from '@/components/FooterToolbar'
+import { deviceMixin } from '@/store/device-mixin'
+
 const statusMap = {
   0: {
     status: 'default',
@@ -126,6 +128,7 @@ const statusMap = {
 
 export default {
   name: 'AdminsList',
+  mixins: [deviceMixin],
   components: {
     AdminForm,
     ResetPasswordFrom,

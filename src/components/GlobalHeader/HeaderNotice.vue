@@ -15,7 +15,17 @@
             </div>
           </a-tab-pane>
           <a-tab-pane tab="消息(8)" key="2">
-            <a-list class="tab-pane"></a-list>
+            <a-list class="tab-pane">
+              <a-list class="tab-pane">
+                <a-list-item v-for="(notice, idx) in notices" :key="idx">
+                  <a-list-item-meta :title="notice.title" :description="notice.description" />
+                </a-list-item>
+              </a-list>
+              <div class="notice-list-bottomBar">
+                <div>清空消息</div>
+                <div>查看更多</div>
+              </div>
+            </a-list>
           </a-tab-pane>
           <a-tab-pane tab="待办(4)" key="3">
             <a-list class="tab-pane"></a-list>
@@ -42,35 +52,35 @@ export default {
       notices: [
         {
           title: '任务名称',
-          description: '任务需要在 2017-01-12 20:00 前启动',
+          description: '任务需要在 2017-01-12 20:00 前启动'
         },
         {
           title: '第三方紧急代码变更',
-          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
         },
         {
           title: '信息安全考试',
-          description: '指派竹尔于 2017-01-09 前完成更新并发布',
+          description: '指派竹尔于 2017-01-09 前完成更新并发布'
         },
         {
           title: 'ABCD 版本发布',
-          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
-        },
-      ],
+          description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务'
+        }
+      ]
     }
   },
   computed: {},
   methods: {
-    visibleChange() {
-      if (!this.loading) {
+    visibleChange(visible) {
+      if (visible) {
         this.loading = true
 
         setTimeout(() => {
           this.loading = false
         }, 1000)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -140,6 +150,10 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    &:hover {
+      color: #1890ff;
+    }
   }
 
   div:not(:only-child):last-child {

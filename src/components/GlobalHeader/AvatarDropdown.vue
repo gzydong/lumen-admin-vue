@@ -5,13 +5,13 @@
       <span>{{ currentUser.name }}</span>
     </span>
     <template v-slot:overlay>
-      <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
+      <a-menu class="ant-pro-drop-down menu">
         <a-menu-item v-if="menu" key="settings" @click="handleToSettings">
           <a-icon type="user" />
           个人设置
         </a-menu-item>
         <a-menu-item v-if="menu" key="password" @click="handleToPassword">
-          <a-icon type="setting" />
+          <a-icon type="unlock" />
           修改密码
         </a-menu-item>
         <a-menu-divider v-if="menu" />
@@ -28,59 +28,57 @@
 </template>
 
 <script>
-  import {
-    Modal
-  } from 'ant-design-vue';
+import { Modal } from 'ant-design-vue'
 
-  export default {
-    name: 'AvatarDropdown',
-    props: {
-      currentUser: {
-        type: Object,
-        default: () => null
-      },
-      menu: {
-        type: Boolean,
-        default: true
-      }
+export default {
+  name: 'AvatarDropdown',
+  props: {
+    currentUser: {
+      type: Object,
+      default: () => null
     },
-    methods: {
-      handleToSettings() {
-        this.$router.push({
-          path: '/account/settings'
-        })
-      },
-      handleToPassword() {
-        this.$router.push({
-          path: '/account/settings/password'
-        })
-      },
-      handleLogout(e) {
-        Modal.confirm({
-          title: this.$t('layouts.usermenu.dialog.title'),
-          content: this.$t('layouts.usermenu.dialog.content'),
-          onOk: () => {
-            return this.$store.dispatch('Logout').then(() => {
-              this.$router.push({
-                name: 'login'
-              });
-            });
-          },
-          onCancel() {}
-        })
-      }
+    menu: {
+      type: Boolean,
+      default: true
+    }
+  },
+  methods: {
+    handleToSettings() {
+      this.$router.push({
+        path: '/account/settings'
+      })
+    },
+    handleToPassword() {
+      this.$router.push({
+        path: '/account/settings/password'
+      })
+    },
+    handleLogout(e) {
+      Modal.confirm({
+        title: this.$t('layouts.usermenu.dialog.title'),
+        content: this.$t('layouts.usermenu.dialog.content'),
+        onOk: () => {
+          return this.$store.dispatch('Logout').then(() => {
+            this.$router.push({
+              name: 'login'
+            })
+          })
+        },
+        onCancel() {}
+      })
     }
   }
+}
 </script>
 
 <style lang="less" scoped>
-  .ant-pro-drop-down {
-    /deep/ .action {
-      margin-right: 8px;
-    }
-
-    /deep/ .ant-dropdown-menu-item {
-      min-width: 160px;
-    }
+.ant-pro-drop-down {
+  /deep/ .action {
+    margin-right: 8px;
   }
+
+  /deep/ .ant-dropdown-menu-item {
+    min-width: 110px;
+  }
+}
 </style>

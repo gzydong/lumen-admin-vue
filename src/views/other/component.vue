@@ -36,17 +36,6 @@
     </a-card>
 
     <a-card :bordered="false" style="min-height:50px;" class="mt-5">
-      <h3 class="an-h3">图标选择器 <a href="https://pro.antdv.com/components/icon-selector">使用文档</a></h3>
-      <a-divider />
-      <icon-selector v-model="currentSelectedIcon" @change="handleIconChange" />
-
-      <a-divider />
-      <p>测试 IconSelector 组件 v-model 功能</p>
-      <a-button @click="changeIcon('down')">改变 Icon-down</a-button>
-      <a-divider type="vertical" />
-      <a-button @click="changeIcon('cloud-download')">改变 Icon-cloud-download</a-button>
-    </a-card>
-    <a-card :bordered="false" style="min-height:50px;" class="mt-5">
       <h3 class="an-h3">ArticleListContent <a href="https://pro.antdv.com/components/icon-selector">使用文档</a></h3>
       <a-divider />
       <article-list-content
@@ -62,7 +51,6 @@
 
 <script>
 import { Ellipsis, NumberInfo, Trend, ArticleListContent } from '@/components'
-import IconSelector from '@/components/IconSelector'
 
 export default {
   name: 'ComponentList',
@@ -70,27 +58,16 @@ export default {
     Ellipsis,
     NumberInfo,
     Trend,
-    IconSelector,
     ArticleListContent
   },
   data() {
     return {
-      currentSelectedIcon: 'pause-circle'
+
     }
   },
 
   methods: {
-    handleIconChange(icon) {
-      console.log('change Icon', icon)
-      this.$message.info(
-        <span>
-          选中图标 <code>{icon}</code>
-        </span>
-      )
-    },
-    changeIcon(type) {
-      this.currentSelectedIcon = type
-    }
+
   }
 }
 </script>

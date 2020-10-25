@@ -83,19 +83,19 @@ export default {
       isMobile: false
     }
   },
+  watch: {
+    collapsed() {
+      // 处理侧栏收起状态
+      this.$store.commit(SIDEBAR_TYPE, this.collapsed)
+    },
+    isMobile() {
+      this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
+    }
+  },
   created() {
     const routes = asyncRouterMap.find(item => item.path === '/')
 
     this.menus = (routes && routes.children) || []
-
-    // 处理侧栏收起状态
-    this.$watch('collapsed', () => {
-      this.$store.commit(SIDEBAR_TYPE, this.collapsed)
-    })
-
-    this.$watch('isMobile', () => {
-      this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
-    })
   },
   mounted() {
     const userAgent = navigator.userAgent
