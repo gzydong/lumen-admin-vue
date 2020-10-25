@@ -144,10 +144,9 @@ export default {
     },
     loginSuccess(res) {
       this.$router.push({
-        name: 'index'
+        path: decodeURIComponent(this.$route.query.redirect || '/index')
       })
 
-      // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
         this.$notification.success({
           message: '欢迎',

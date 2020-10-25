@@ -43,7 +43,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { ServeCreateAdmin } from '@/api/user'
+import { ServeCreateAdmin } from '@/api/admin'
 
 // 表单字段
 const fields = ['id', 'username', 'password', 'password2']

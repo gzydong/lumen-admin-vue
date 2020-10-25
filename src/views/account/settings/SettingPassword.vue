@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { ServeUpdatePassword } from '@/api/user'
+import { ServeUpdatePassword } from '@/api/admin'
 
 export default {
   data() {

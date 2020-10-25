@@ -23,7 +23,7 @@
     </template>
 
     <template v-slot:footerRender>
-      <span>Copyright ©2020 LumenCMS 版权所有 <a-divider type="vertical" /> 版本号 Version 1.0</span>
+      <span>Copyright ©2020 LumenCMS 版权所有</span>
     </template>
 
     <router-view />

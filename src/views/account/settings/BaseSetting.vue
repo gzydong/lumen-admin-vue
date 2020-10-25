@@ -65,7 +65,7 @@
 <script>
 import AvatarModal from './AvatarModal'
 
-import { ServeGetAdminDetail, ServeUpdateAdminDetail } from '@/api/user'
+import { ServeGetAdminDetail, ServeUpdateAdminDetail } from '@/api/admin'
 import pick from 'lodash.pick'
 export default {
   components: {

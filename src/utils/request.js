@@ -16,9 +16,6 @@ const request = axios.create({
   timeout: 8000,
 });
 
-// 通知消息唯一key
-const notifyKey = 'forbidden';
-
 /**
  * 异常拦截处理器
  * 
@@ -34,12 +31,13 @@ const errorHandler = (error) => {
 
     if (error.response.status === 403) {
       notification.error({
-        key: notifyKey,
+        key: "Forbidden",
         message: 'Forbidden',
         description: data.message
       });
-    } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
+    } else if (error.response.status === 401) {
       notification.warning({
+        key: 'Unauthorized',
         message: '授权提示',
         description: '授权登录已失效，请重新登录！'
       });

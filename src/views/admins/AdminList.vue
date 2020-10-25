@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { ServeGetAdmins, ServeDeleteAdmin, ServeUpdateAdminStatus } from '@/api/user'
+import { ServeGetAdmins, ServeDeleteAdmin, ServeUpdateAdminStatus } from '@/api/admin'
 
 import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'

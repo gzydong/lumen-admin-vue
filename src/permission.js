@@ -40,14 +40,7 @@ router.beforeEach((to, from, next) => {
       next(defaultRoutePath);
       NProgress.done();
     } else {
-      const redirect = decodeURIComponent(from.query.redirect || to.path)
-      if (to.path === redirect) {
-        next()
-      } else {
-        next({
-          path: redirect
-        })
-      }
+      next();
     }
   } else {
     // 在免登录名单，直接进入
@@ -60,6 +53,7 @@ router.beforeEach((to, from, next) => {
           redirect: to.fullPath
         }
       });
+
       NProgress.done();
     }
   }

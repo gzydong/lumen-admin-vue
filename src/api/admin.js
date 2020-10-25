@@ -19,7 +19,7 @@ const API_LISTS = {
 /**
  * 导出服务接口列表
  */
-export const USER_API = API_LISTS;
+export const ADMIN_API = API_LISTS;
 
 /**
  * 获取管理员列表服务接口

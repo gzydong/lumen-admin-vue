@@ -48,7 +48,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { ServeUpdateAdminPassword } from '@/api/user'
+import { ServeUpdateAdminPassword } from '@/api/admin'
 
 // 表单字段
 const fields = ['id', 'username', 'password', 'password2']

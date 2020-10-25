@@ -90,6 +90,11 @@ export function formatTree(data) {
 }
 
 
+/**
+ * 数组去重
+ * 
+ * @param {Array} arr 
+ */
 export const uniqueArr = (arr) => {
   if (Array.hasOwnProperty('from')) {
     return Array.from(new Set(arr));
