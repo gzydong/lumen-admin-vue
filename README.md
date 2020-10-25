@@ -21,6 +21,4 @@ npm run serve
 # 生产环境构建项目
 npm run build
 
-# 生产环境构建项目并查看构建报告
-npm run build --report
-```
+
