@@ -6,10 +6,14 @@
  * 自定义图标加载表
  * 所有图标均从这里加载，方便管理
  */
-import bxAnaalyse from '@/assets/icons/bx-analyse.svg?inline'; // path to your '*.svg?inline' file.
 
-import LoginAsideSvg from '@/assets/login-aside.svg?inline'
-import LogoSvg from '@/assets/logo.svg?inline'
+// 案例 ： path to your '*.svg?inline' file.
+// import IconName from '@/assets/icons/icon-name.svg?inline'; 
+
+import bxAnaalyse from '@/assets/icons/bx-analyse.svg?inline';
+import LoginAsideSvg from '@/assets/login-aside.svg?inline';
+import LogoSvg from '@/assets/logo.svg?inline';
+
 export {
   bxAnaalyse,
   LoginAsideSvg,

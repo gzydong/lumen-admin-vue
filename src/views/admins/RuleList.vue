@@ -20,19 +20,26 @@
         :columns="columns"
         :data="loadData"
         :showPagination="false"
+        :defaultExpandedRowKeys="expandedRowKeys"
         :scroll="{ x: 1200 }"
       >
         <span slot="type" slot-scope="text">
-          <a-badge v-if="text == 0" count="目录" :number-style="{ backgroundColor: '#1890ff' }" />
-          <a-badge v-else-if="text == 1" count="菜单" :number-style="{ backgroundColor: '#52c41a' }" />
-          <a-badge v-else="text == 2" count="权限" :number-style="{ backgroundColor: 'rgb(189, 193, 188)' }" />
+          <a-badge v-if="text == 0" count="目录" :number-style="{ backgroundColor: '#1890ff', borderRadius: '3px' }" />
+          <a-badge
+            v-else-if="text == 1"
+            count="菜单"
+            :number-style="{ backgroundColor: '#52c41a', borderRadius: '3px' }"
+          />
+          <a-badge
+            v-else="text == 2"
+            count="权限"
+            :number-style="{ backgroundColor: 'rgb(189, 193, 188)', borderRadius: '3px' }"
+          />
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <template v-if="record.type != 2">
-            <a @click="handleInsert(record)">新增</a>
-            <a-divider type="vertical" />
-          </template>
+          <a @click="handleInsert(record)" :disabled="record.type == 2">新增</a>
+          <a-divider type="vertical" />
           <a @click="handleEditRule(record)">编辑</a>
           <a-divider type="vertical" />
           <a @click="deleteConfirm(record)">删除</a>
@@ -61,27 +68,27 @@ import { formatTree, uniqueArr } from '@/utils/util'
 export default {
   name: 'TableList',
   components: {
-    RuleForm
+    RuleForm,
   },
   data() {
     return {
       columns: [
         {
-          title: '权限名称',
-          dataIndex: 'rule_name'
+          title: '菜单/权限名称',
+          dataIndex: 'rule_name',
         },
         {
           title: '权限路由',
-          dataIndex: 'route'
+          dataIndex: 'route',
         },
         {
           title: '权限类型',
           dataIndex: 'type',
-          width: '150px',
+          width: '130px',
           align: 'center',
           scopedSlots: {
-            customRender: 'type'
-          }
+            customRender: 'type',
+          },
         },
         {
           title: '操作',
@@ -89,18 +96,19 @@ export default {
           width: '180px',
           align: 'right',
           scopedSlots: {
-            customRender: 'action'
-          }
-        }
+            customRender: 'action',
+          },
+        },
       ],
+      expandedRowKeys: [],
 
       // 查询参数
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
+      loadData: (parameter) => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetPerms(data).then(res => {
+        return ServeGetPerms(data).then((res) => {
           return this.formatData(res.data)
         })
       },
@@ -108,21 +116,32 @@ export default {
       // 创建角色弹出层
       formModal: {
         model: null,
-        visible: false
+        visible: false,
       },
 
       // 权限树结构
-      treeData: []
+      treeData: [],
     }
   },
   methods: {
     // 处理表格数据
     formatData(data) {
-      data.rows.map(row => {
+      let _this = this
+
+      let arr = []
+      data.rows.map((row) => {
         row.key = row.id
         row.pid = row.parent_id
+        if (row.parent_id > 0) {
+          arr.push(row.parent_id)
+        }
+
         return row
       })
+
+      // 清空展开的行
+      this.expandedRowKeys.splice(0, this.expandedRowKeys.length)
+      this.expandedRowKeys.push(...uniqueArr(arr))
 
       this.treeData = data.rows = formatTree(data.rows)
       return data
@@ -147,7 +166,7 @@ export default {
         id: record.id,
         type: record.type.toString(),
         route: record.route,
-        rule_name: record.rule_name
+        rule_name: record.rule_name,
       }
 
       this.$refs.formModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
@@ -178,12 +197,12 @@ export default {
       let _this = this
       this.$confirm({
         title: '确定删除该条权限信息吗？',
-        content: h => <div style="color:red;">删除后不可恢复</div>,
+        content: (h) => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
           return ServeDeletePerms({
-            id: data.id
+            id: data.id,
           })
-            .then(res => {
+            .then((res) => {
               if (res.code == 200) {
                 _this.$message.success('权限删除成功...')
                 _this.handleRefresh()
@@ -191,12 +210,12 @@ export default {
                 _this.$message.error('权限删除失败...')
               }
             })
-            .catch(err => {
+            .catch((err) => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        }
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

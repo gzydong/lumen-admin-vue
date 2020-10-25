@@ -11,7 +11,6 @@ import {
   TOGGLE_NAV_THEME,
   TOGGLE_WEAK,
   TOGGLE_COLOR,
-  TOGGLE_MULTI_TAB,
   ADMIN_INFO
 } from '@/store/mutation-types';
 

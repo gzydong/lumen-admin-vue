@@ -138,11 +138,11 @@ export default {
   data() {
     return {
       columns: [
-        {
-          title: 'ID',
-          dataIndex: 'id',
-          width: '80px'
-        },
+        // {
+        //   title: 'ID',
+        //   dataIndex: 'id',
+        //   width: '80px'
+        // },
         {
           title: '登录账号',
           dataIndex: 'username'

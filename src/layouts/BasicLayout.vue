@@ -31,22 +31,21 @@
 </template>
 
 <script>
-import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
-import { i18nRender } from '@/locales'
 import { mapState } from 'vuex'
-import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
-
-import defaultSettings from '@/config/defaultSettings'
-import RightContent from '@/components/GlobalHeader/RightContent'
+import { i18nRender } from '@/locales'
 import { LogoSvg } from '@/core/icons'
+import defaultSettings from '@/config/defaultSettings'
 import { asyncRouterMap } from '@/config/router.config'
+import RightContent from '@/components/GlobalHeader/RightContent'
+import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
+import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
 
 export default {
   name: 'BasicLayout',
   components: {
     SettingDrawer,
     RightContent,
-    LogoSvg
+    LogoSvg,
   },
   data() {
     return {
@@ -74,13 +73,13 @@ export default {
         colorWeak: defaultSettings.colorWeak,
 
         hideHintAlert: false,
-        hideCopyButton: false
+        hideCopyButton: false,
       },
       // 媒体查询
       query: {},
 
       // 是否手机模式
-      isMobile: false
+      isMobile: false,
     }
   },
   watch: {
@@ -90,10 +89,10 @@ export default {
     },
     isMobile() {
       this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
-    }
+    },
   },
   created() {
-    const routes = asyncRouterMap.find(item => item.path === '/')
+    const routes = asyncRouterMap.find((item) => item.path === '/')
 
     this.menus = (routes && routes.children) || []
   },
@@ -148,8 +147,8 @@ export default {
           }
           break
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

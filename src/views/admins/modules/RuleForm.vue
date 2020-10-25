@@ -35,13 +35,14 @@
             <a-radio-button value="2">权限</a-radio-button>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="权限名称">
+        <a-form-item label="权限名称" hasFeedback>
           <a-input
             placeholder="请填写权限名称"
-            v-decorator="['rule_name', { rules: [{ required: true, message: '权限字符不能为空！' }] }]"
+
+            v-decorator="['rule_name', { rules: [{ required: true, message: '权限名称不能为空！' }] }]"
           />
         </a-form-item>
-        <a-form-item label="权限路由">
+        <a-form-item label="权限路由" hasFeedback>
           <a-input
             placeholder="请填写权限路由"
             v-decorator="['route', { rules: [{ required: true, message: '权限路由不能为空！' }] }]"
@@ -102,7 +103,7 @@ export default {
         }
       },
       loading: false,
-      form: this.$form.createForm(this),
+      form: this.$form.createForm(this, { name: 'rule_from' }),
       parent_id: undefined
     }
   },
