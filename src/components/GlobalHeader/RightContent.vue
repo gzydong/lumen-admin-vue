@@ -1,7 +1,7 @@
 <template>
   <div :class="wrpCls">
     <!-- 消息通知提示 -->
-    <header-notice :class="prefixCls"  />
+    <header-notice :class="prefixCls" />
 
     <!-- 用户设置 -->
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
@@ -24,47 +24,47 @@
 <script>
 import AvatarDropdown from './AvatarDropdown'
 import HeaderNotice from './HeaderNotice'
-import SelectLang from '@/components/SelectLang'
+import SelectLang from './SelectLang'
 
 export default {
   name: 'RightContent',
   components: {
     AvatarDropdown,
     SelectLang,
-    HeaderNotice,
+    HeaderNotice
   },
   props: {
     prefixCls: {
       type: String,
-      default: 'ant-pro-global-header-index-action',
+      default: 'ant-pro-global-header-index-action'
     },
     isMobile: {
       type: Boolean,
-      default: () => false,
+      default: () => false
     },
     topMenu: {
       type: Boolean,
-      required: true,
+      required: true
     },
     theme: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       showMenu: true,
       currentUser: {},
-      isFullScreen: false,
+      isFullScreen: false
     }
   },
   computed: {
     wrpCls() {
       return {
         'ant-pro-global-header-index-right': true,
-        [`ant-pro-global-header-index-${this.isMobile || !this.topMenu ? 'light' : this.theme}`]: true,
+        [`ant-pro-global-header-index-${this.isMobile || !this.topMenu ? 'light' : this.theme}`]: true
       }
-    },
+    }
   },
   mounted() {
     setTimeout(() => {
@@ -72,7 +72,7 @@ export default {
         name: this.$store.state.user.name || 'Serati Ma',
         avatar:
           this.$store.state.user.avatar ||
-          'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+          'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
       }
     }, 500)
   },
@@ -104,7 +104,7 @@ export default {
 
         this.isFullScreen = true
       }
-    },
-  },
+    }
+  }
 }
 </script>

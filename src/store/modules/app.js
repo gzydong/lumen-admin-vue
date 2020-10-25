@@ -28,7 +28,6 @@ const app = {
     autoHideHeader: false,
     color: '',
     weak: false,
-    multiTab: true,
     lang: 'en-US',
     _antLocale: {}
   },
@@ -76,10 +75,6 @@ const app = {
       state.lang = lang
       state._antLocale = antd
       storage.set(APP_LANGUAGE, lang)
-    },
-    [TOGGLE_MULTI_TAB]: (state, bool) => {
-      storage.set(TOGGLE_MULTI_TAB, bool)
-      state.multiTab = bool
     }
   },
   actions: {

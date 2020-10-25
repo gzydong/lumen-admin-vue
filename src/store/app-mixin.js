@@ -1,4 +1,6 @@
-import { mapState } from 'vuex'
+import {
+  mapState
+} from 'vuex'
 
 const baseMixin = {
   computed: {
@@ -13,15 +15,14 @@ const baseMixin = {
       autoHideHeader: state => state.app.autoHideHeader,
 
       isMobile: state => state.app.isMobile,
-      sideCollapsed: state => state.app.sideCollapsed,
-      multiTab: state => state.app.multiTab
+      sideCollapsed: state => state.app.sideCollapsed
     }),
-    isTopMenu () {
+    isTopMenu() {
       return this.layout === 'topmenu'
     }
   },
   methods: {
-    isSideMenu () {
+    isSideMenu() {
       return !this.isTopMenu
     }
   }

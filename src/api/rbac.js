@@ -128,7 +128,6 @@ export function ServeGetRolePerms(data) {
   return get(API_LISTS.get_role_permission, data);
 }
 
-
 /**
  * 获取管理员分配角色及接口
  * 

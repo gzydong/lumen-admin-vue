@@ -68,7 +68,6 @@ export const asyncRouterMap = [{
       meta: {
         icon: 'tool',
         title: '自定义组件',
-        keepAlive: false,
       }
     },
     // account

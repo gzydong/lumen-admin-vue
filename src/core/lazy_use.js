@@ -52,7 +52,6 @@ import {
 import Viser from 'viser-vue'
 import VueCropper from 'vue-cropper'
 import Dialog from '@/components/Dialog'
-import MultiTab from '@/components/MultiTab'
 import PageLoading from '@/components/PageLoading'
 
 Vue.use(ConfigProvider)
@@ -108,8 +107,7 @@ Vue.prototype.$warning = Modal.warning
 
 Vue.use(Viser)
 Vue.use(Dialog) // this.$dialog func
-Vue.use(MultiTab)
-Vue.use(PageLoading)
 Vue.use(VueCropper)
+Vue.use(PageLoading)
 
 process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')
