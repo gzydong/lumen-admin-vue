@@ -32,7 +32,6 @@ export const asyncRouterMap = [{
     },
     {
       path: '/admins',
-      redirect: '/admins/lists',
       component: RouteView,
       meta: {
         title: '权限分配',
@@ -65,16 +64,27 @@ export const asyncRouterMap = [{
           }
         },
 
+        {
+          path: '/admins/other',
+          name: 'admins/other',
+          component: () => import('@/views/admins/RuleList'),
+          hidden:true,
+          meta: {
+            title: '其它',
+            keepAlive: false,
+          }
+        },
+
         // ----- 
         {
-          path:'/tests',
+          path: '/tests',
           name: 'test-manage',
           meta: {
             title: '测试管理',
             keepAlive: false,
           },
           component: RouteView,
-          redirect:'/tests/index',
+          redirect: '/tests/index',
           children: [{
             path: '/tests/index',
             name: 'componentasdfa',

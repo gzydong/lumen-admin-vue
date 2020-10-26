@@ -45,7 +45,7 @@ export default {
   components: {
     SettingDrawer,
     RightContent,
-    LogoSvg,
+    LogoSvg
   },
   data() {
     return {
@@ -73,13 +73,13 @@ export default {
         colorWeak: defaultSettings.colorWeak,
 
         hideHintAlert: false,
-        hideCopyButton: false,
+        hideCopyButton: false
       },
       // 媒体查询
       query: {},
 
       // 是否手机模式
-      isMobile: false,
+      isMobile: false
     }
   },
   watch: {
@@ -89,11 +89,10 @@ export default {
     },
     isMobile() {
       this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
-    },
+    }
   },
   created() {
-    const routes = asyncRouterMap.find((item) => item.path === '/')
-
+    const routes = asyncRouterMap.find(item => item.path === '/')
     this.menus = (routes && routes.children) || []
   },
   mounted() {
@@ -147,8 +146,8 @@ export default {
           }
           break
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

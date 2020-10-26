@@ -23,6 +23,11 @@
         :defaultExpandedRowKeys="expandedRowKeys"
         :scroll="{ x: 1200 }"
       >
+        <span slot="icon" slot-scope="text">
+          <span v-if="text"><a-icon :type="text"/></span>
+          <span v-else>-</span>
+        </span>
+
         <span slot="type" slot-scope="text">
           <a-badge v-if="text == 0" count="目录" :number-style="{ backgroundColor: '#1890ff', borderRadius: '3px' }" />
           <a-badge
@@ -68,37 +73,52 @@ import { formatTree, uniqueArr } from '@/utils/util'
 export default {
   name: 'TableList',
   components: {
-    RuleForm,
+    RuleForm
   },
   data() {
     return {
       columns: [
         {
           title: '菜单/权限名称',
-          dataIndex: 'rule_name',
+          dataIndex: 'rule_name'
         },
         {
           title: '权限路由',
-          dataIndex: 'route',
+          dataIndex: 'route'
+        },
+        {
+          title: '图标',
+          dataIndex: 'icon',
+          width: '80px',
+          align: 'center',
+          scopedSlots: {
+            customRender: 'icon'
+          }
+        },
+        {
+          title: '排序',
+          dataIndex: 'sort',
+          width: '80px',
+          align: 'center'
         },
         {
           title: '权限类型',
           dataIndex: 'type',
-          width: '130px',
+          width: '120px',
           align: 'center',
           scopedSlots: {
-            customRender: 'type',
-          },
+            customRender: 'type'
+          }
         },
         {
           title: '操作',
           dataIndex: 'action',
-          width: '180px',
+          width: '160px',
           align: 'right',
           scopedSlots: {
-            customRender: 'action',
-          },
-        },
+            customRender: 'action'
+          }
+        }
       ],
       expandedRowKeys: [],
 
@@ -106,9 +126,9 @@ export default {
       queryParam: {},
 
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: parameter => {
         const data = Object.assign({}, parameter, this.queryParam)
-        return ServeGetPerms(data).then((res) => {
+        return ServeGetPerms(data).then(res => {
           return this.formatData(res.data)
         })
       },
@@ -116,11 +136,11 @@ export default {
       // 创建角色弹出层
       formModal: {
         model: null,
-        visible: false,
+        visible: false
       },
 
       // 权限树结构
-      treeData: [],
+      treeData: []
     }
   },
   methods: {
@@ -129,7 +149,7 @@ export default {
       let _this = this
 
       let arr = []
-      data.rows.map((row) => {
+      data.rows.map(row => {
         row.key = row.id
         row.pid = row.parent_id
         if (row.parent_id > 0) {
@@ -167,6 +187,8 @@ export default {
         type: record.type.toString(),
         route: record.route,
         rule_name: record.rule_name,
+        icon: record.icon,
+        sort: record.sort
       }
 
       this.$refs.formModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
@@ -197,12 +219,12 @@ export default {
       let _this = this
       this.$confirm({
         title: '确定删除该条权限信息吗？',
-        content: (h) => <div style="color:red;">删除后不可恢复</div>,
+        content: h => <div style="color:red;">删除后不可恢复</div>,
         onOk() {
           return ServeDeletePerms({
-            id: data.id,
+            id: data.id
           })
-            .then((res) => {
+            .then(res => {
               if (res.code == 200) {
                 _this.$message.success('权限删除成功...')
                 _this.handleRefresh()
@@ -210,12 +232,12 @@ export default {
                 _this.$message.error('权限删除失败...')
               }
             })
-            .catch((err) => {
+            .catch(err => {
               _this.$message.error('网络异常，请稍后再试...')
             })
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>

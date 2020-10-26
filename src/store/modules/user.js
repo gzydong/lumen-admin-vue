@@ -1,8 +1,8 @@
 import storage from 'store';
 
 import {
-  login,
-  logout
+  ServeLogin,
+  ServeLogout
 } from '@/api/auth';
 
 import {
@@ -39,7 +39,7 @@ const user = {
       commit
     }, userInfo) {
       return new Promise((resolve, reject) => {
-        login(userInfo).then(res => {
+        ServeLogin(userInfo).then(res => {
           if (res.code == 200) {
             const result = res.data;
             let adminInfo = res.data.admin_info;
@@ -74,7 +74,7 @@ const user = {
       }
 
       return new Promise((resolve, error) => {
-        logout().then((res) => {
+        ServeLogout().then((res) => {
           func();
           resolve()
         }).catch(() => {

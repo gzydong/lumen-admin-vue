@@ -12,12 +12,10 @@
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
         <a-form-item v-show="false">
-          <a-input v-decorator="['id', { rules: [] }]" placeholder="ID" />
+          <a-input v-decorator="['id']" />
         </a-form-item>
         <a-form-item label="父级权限">
           <a-tree-select
-            show-search
-            style="width: 100%"
             v-model="parent_id"
             :dropdown-style="{ maxHeight: '500px', overflow: 'auto' }"
             placeholder="不选择默认为顶级栏目"
@@ -35,19 +33,36 @@
             <a-radio-button value="2">权限</a-radio-button>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="权限名称" hasFeedback>
+        <a-form-item label="权限名称">
           <a-input
             placeholder="请填写权限名称"
-
             v-decorator="['rule_name', { rules: [{ required: true, message: '权限名称不能为空！' }] }]"
           />
         </a-form-item>
-        <a-form-item label="权限路由" hasFeedback>
+        <a-form-item label="权限路由">
           <a-input
             placeholder="请填写权限路由"
             v-decorator="['route', { rules: [{ required: true, message: '权限路由不能为空！' }] }]"
             @keyup.native.enter="submit"
           />
+        </a-form-item>
+
+        <a-form-item label="排序">
+          <a-input-number
+            placeholder="非必填(默认为0)"
+            v-decorator="['sort']"
+            :min="0"
+            :max="9999"
+            style="width:150px"
+          />
+        </a-form-item>
+
+        <a-form-item label="菜单图标">
+          <a-input-search placeholder="非必填项" v-decorator="['icon']">
+            <a-button slot="enterButton" type="primary">
+              <a-icon type="search" />
+            </a-button>
+          </a-input-search>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -64,7 +79,7 @@ import pick from 'lodash.pick'
 import { ServeCreatePerms, ServeEditPerms } from '@/api/rbac'
 
 // 表单字段
-const fields = ['id', 'type', 'route', 'rule_name']
+const fields = ['id', 'type', 'route', 'rule_name', 'sort', 'icon']
 
 export default {
   name: 'RuleForm',

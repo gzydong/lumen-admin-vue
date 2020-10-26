@@ -108,12 +108,15 @@
 
 <script>
 import { ServeGetAdmins, ServeDeleteAdmin, ServeUpdateAdminStatus } from '@/api/admin'
+import { ServeGetMenus } from '@/api/auth'
 
 import AdminForm from './modules/AdminForm'
 import ResetPasswordFrom from './modules/ResetPasswordFrom'
 import GiveAdminRolePrems from './modules/GiveAdminRolePrems'
 import FooterToolBar from '@/components/FooterToolbar'
 import { deviceMixin } from '@/store/device-mixin'
+
+import { formatTree, uniqueArr } from '@/utils/util'
 
 const statusMap = {
   0: {
@@ -138,11 +141,6 @@ export default {
   data() {
     return {
       columns: [
-        // {
-        //   title: 'ID',
-        //   dataIndex: 'id',
-        //   width: '80px'
-        // },
         {
           title: '登录账号',
           dataIndex: 'username'
@@ -237,6 +235,9 @@ export default {
         onChange: this.onSelectChange
       }
     }
+  },
+  created() {
+    // this.getAuthMenus()
   },
   methods: {
     // 表格刷新
@@ -346,6 +347,43 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
+    },
+
+    getAuthMenus() {
+      ServeGetMenus()
+        .then(res => {
+          if (res.code == 200) {
+            let menus = res.data.menus
+            menus.map(value => {
+              value.pid = value.parent_id
+              return value
+            })
+            menus = formatTree(menus)
+            // console.log(JSON.stringify(this.packMenu(menus)))
+          }
+        })
+        .catch(err => {})
+    },
+
+    packMenu(menus) {
+      return menus.map(menu => {
+        let data = {
+          path: menu.route,
+          component: '页面组件',
+          meta: {
+            title: menu.rule_name
+            // icon: menu.icon
+          }
+        }
+
+        if (menu.children) {
+          data.redirect = menu.children[0].route
+          data.component = 'RouteView'
+          data.children = this.packMenu(menu.children)
+        }
+
+        return data
+      })
     }
   }
 }
