@@ -237,7 +237,7 @@ export default {
     }
   },
   created() {
-    // this.getAuthMenus()
+    this.getAuthMenus()
   },
   methods: {
     // 表格刷新
@@ -359,7 +359,7 @@ export default {
               return value
             })
             menus = formatTree(menus)
-            // console.log(JSON.stringify(this.packMenu(menus)))
+            console.log(this.packMenu(menus))
           }
         })
         .catch(err => {})

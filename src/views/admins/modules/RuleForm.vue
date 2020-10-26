@@ -138,6 +138,9 @@ export default {
       this.form.validateFields((errors, values) => {
         if (!errors) {
           values.parent_id = this.parent_id == undefined ? 0 : this.parent_id
+          values.icon = values.icon == undefined ? '' : values.icon
+          values.sort = values.sort == undefined ? '' : values.sort
+
           if (values.id > 0) {
             _this.edit(values)
           } else {
