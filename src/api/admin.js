@@ -4,7 +4,7 @@ import {
 } from '@/utils/request'
 
 // 接口列表
-const API_LISTS = {
+const api = {
   // 管理员相关接口
   admins: 'admin/admins/lists', // 获取管理员数据列表接口
   create_admin: 'admin/admins/create',
@@ -19,7 +19,7 @@ const API_LISTS = {
 /**
  * 导出服务接口列表
  */
-export const ADMIN_API = API_LISTS;
+export const ADMIN_API = api;
 
 /**
  * 获取管理员列表服务接口
@@ -27,7 +27,7 @@ export const ADMIN_API = API_LISTS;
  * @param {*} data 请求数据
  */
 export function ServeGetAdmins(data) {
-  return get(API_LISTS.admins, data);
+  return get(api.admins, data);
 }
 
 /**
@@ -36,7 +36,7 @@ export function ServeGetAdmins(data) {
  * @param {*} data 请求数据
  */
 export function ServeCreateAdmin(data) {
-  return post(API_LISTS.create_admin, data);
+  return post(api.create_admin, data);
 }
 
 /**
@@ -45,7 +45,7 @@ export function ServeCreateAdmin(data) {
  * @param {*} data 请求数据
  */
 export function ServeDeleteAdmin(data) {
-  return post(API_LISTS.delete_admin, data);
+  return post(api.delete_admin, data);
 }
 
 /**
@@ -54,7 +54,7 @@ export function ServeDeleteAdmin(data) {
  * @param {*} data 请求数据
  */
 export function ServeUpdateAdminPassword(data) {
-  return post(API_LISTS.update_password, data);
+  return post(api.update_password, data);
 }
 
 /**
@@ -63,26 +63,26 @@ export function ServeUpdateAdminPassword(data) {
  * @param {*} data 请求数据
  */
 export function ServeUpdateAdminStatus(data) {
-  return post(API_LISTS.update_status, data);
+  return post(api.update_status, data);
 }
 
 /**
  * 退出登录服务接口
  */
 export function ServeGetAdminDetail() {
-  return get(API_LISTS.admin_detail);
+  return get(api.admin_detail);
 }
 
 /**
  * 修改当前登录用户信息服务接口
  */
 export function ServeUpdateAdminDetail(data) {
-  return post(API_LISTS.admin_update_detail, data);
+  return post(api.admin_update_detail, data);
 }
 
 /**
  * 修改当前登录用户密码服务接口
  */
 export function ServeUpdatePassword(data) {
-  return post(API_LISTS.admin_update_password, data);
+  return post(api.admin_update_password, data);
 }

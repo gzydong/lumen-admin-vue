@@ -39,62 +39,30 @@ export const asyncRouterMap = [{
         icon: 'solution',
       },
       children: [{
-          path: '/admins/lists',
-          name: 'admins',
-          component: () => import('@/views/admins/AdminList'),
-          meta: {
-            title: '管理人员',
-            keepAlive: false,
-          }
-        }, {
-          path: '/admins/roles',
-          name: 'roles',
-          component: () => import('@/views/admins/RolesList'),
-          meta: {
-            title: '角色管理',
-            keepAlive: false,
-          }
-        }, {
-          path: '/admins/permissions',
-          name: 'permissions',
-          component: () => import('@/views/admins/RuleList'),
-          meta: {
-            title: '权限管理',
-            keepAlive: false,
-          }
-        },
-
-        {
-          path: '/admins/other',
-          name: 'admins/other',
-          component: () => import('@/views/admins/RuleList'),
-          hidden:true,
-          meta: {
-            title: '其它',
-            keepAlive: false,
-          }
-        },
-
-        // ----- 
-        {
-          path: '/tests',
-          name: 'test-manage',
-          meta: {
-            title: '测试管理',
-            keepAlive: false,
-          },
-          component: RouteView,
-          redirect: '/tests/index',
-          children: [{
-            path: '/tests/index',
-            name: 'componentasdfa',
-            component: () => import('@/views/other/component'),
-            meta: {
-              title: '自定义组件',
-            }
-          }]
+        path: '/admins/lists',
+        name: 'admins',
+        component: () => import('@/views/admins/AdminList'),
+        meta: {
+          title: '管理人员',
+          keepAlive: false,
         }
-      ]
+      }, {
+        path: '/admins/roles',
+        name: 'roles',
+        component: () => import('@/views/admins/RolesList'),
+        meta: {
+          title: '角色管理',
+          keepAlive: false,
+        }
+      }, {
+        path: '/admins/permissions',
+        name: 'permissions',
+        component: () => import('@/views/admins/RuleList'),
+        meta: {
+          title: '权限管理',
+          keepAlive: false,
+        }
+      }]
     },
     {
       path: '/other',

@@ -66,7 +66,6 @@ export function removeLoadingAnimate(id = '', timeout = 1500) {
   }, timeout)
 }
 
-
 /**
  * 生成树结构 json 数据
  * 

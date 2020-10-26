@@ -4,7 +4,7 @@ import {
 } from '@/utils/request'
 
 // 接口列表
-const API_LISTS = {
+const api = {
   // 角色相关接口
   roles: 'admin/rbac/roles', // 获取角色列表接口
   create_role: 'admin/rbac/create-role', // 创建角色接口
@@ -27,7 +27,7 @@ const API_LISTS = {
 /**
  * 导出服务接口列表
  */
-export const RBAC_API = API_LISTS
+export const RBAC_API = api
 
 /**
  * 获取角色列表服务接口
@@ -35,7 +35,7 @@ export const RBAC_API = API_LISTS
  * @param {*} data 请求数据
  */
 export function ServeGetRoles(data) {
-  return get(API_LISTS.roles, data);
+  return get(api.roles, data);
 }
 
 /**
@@ -44,7 +44,7 @@ export function ServeGetRoles(data) {
  * @param {*} data 请求数据
  */
 export function ServeCreateRole(data) {
-  return post(API_LISTS.create_role, data);
+  return post(api.create_role, data);
 }
 
 /**
@@ -53,7 +53,7 @@ export function ServeCreateRole(data) {
  * @param {*} data 请求数据
  */
 export function ServeEditRole(data) {
-  return post(API_LISTS.edit_role, data);
+  return post(api.edit_role, data);
 }
 
 /**
@@ -62,7 +62,7 @@ export function ServeEditRole(data) {
  * @param {*} data 请求数据
  */
 export function ServeDeleteRole(data) {
-  return post(API_LISTS.delete_role, data);
+  return post(api.delete_role, data);
 }
 
 /**
@@ -71,7 +71,7 @@ export function ServeDeleteRole(data) {
  * @param {*} data 请求数据
  */
 export function ServeCreatePerms(data) {
-  return post(API_LISTS.create_permission, data);
+  return post(api.create_permission, data);
 }
 
 /**
@@ -80,7 +80,7 @@ export function ServeCreatePerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeEditPerms(data) {
-  return post(API_LISTS.edit_permission, data);
+  return post(api.edit_permission, data);
 }
 
 /**
@@ -89,7 +89,7 @@ export function ServeEditPerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeDeletePerms(data) {
-  return post(API_LISTS.delete_permission, data);
+  return post(api.delete_permission, data);
 }
 
 /**
@@ -98,7 +98,7 @@ export function ServeDeletePerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeGetPerms(data) {
-  return get(API_LISTS.permissions, data);
+  return get(api.permissions, data);
 }
 
 /**
@@ -107,7 +107,7 @@ export function ServeGetPerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeGiveRolePerms(data) {
-  return post(API_LISTS.give_role_permission, data);
+  return post(api.give_role_permission, data);
 }
 
 /**
@@ -116,7 +116,7 @@ export function ServeGiveRolePerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeGiveAdminPerms(data) {
-  return post(API_LISTS.give_admin_permission, data);
+  return post(api.give_admin_permission, data);
 }
 
 /**
@@ -125,7 +125,7 @@ export function ServeGiveAdminPerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeGetRolePerms(data) {
-  return get(API_LISTS.get_role_permission, data);
+  return get(api.get_role_permission, data);
 }
 
 /**
@@ -134,5 +134,5 @@ export function ServeGetRolePerms(data) {
  * @param {*} data 请求数据
  */
 export function ServeGetAdminPerms(data) {
-  return get(API_LISTS.get_admin_permission, data);
+  return get(api.get_admin_permission, data);
 }

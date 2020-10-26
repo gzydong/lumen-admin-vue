@@ -3,7 +3,7 @@ import {
   get
 } from '@/utils/request';
 
-const API_LISTS = {
+const api = {
   login: 'admin/auth/login',
   logout: 'admin/auth/logout',
   auth_menus:'admin/auth/menus'
@@ -16,24 +16,24 @@ const API_LISTS = {
  * @returns {*}
  */
 export function ServeLogin(data) {
-  return post(API_LISTS.login, data);
+  return post(api.login, data);
 }
 
 /**
  * 退出登录服务接口
  */
 export function ServeLogout() {
-  return post(API_LISTS.logout);
+  return post(api.logout);
 }
 
 /**
  * 获取授权菜单服务接口
  */
 export function ServeGetMenus() {
-  return get(API_LISTS.auth_menus);
+  return get(api.auth_menus);
 }
 
 /**
  * 导出服务接口列表
  */
-export const AUTH_API = API_LISTS
+export const AUTH_API = api
