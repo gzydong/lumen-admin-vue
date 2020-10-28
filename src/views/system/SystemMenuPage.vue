@@ -71,7 +71,7 @@ import RuleForm from './modules/RuleForm'
 import { formatTree, uniqueArr } from '@/utils/util'
 
 export default {
-  name: 'TableList',
+  name: 'SystemMenuPage',
   components: {
     RuleForm
   },
@@ -79,12 +79,23 @@ export default {
     return {
       columns: [
         {
-          title: '菜单/权限名称',
-          dataIndex: 'rule_name'
+          title: '菜单名称',
+          dataIndex: 'title'
         },
         {
-          title: '权限路由',
-          dataIndex: 'route'
+          title: '权限标识',
+          dataIndex: 'perms',
+          customRender: text => (text == '' ? '-' : text)
+        },
+        {
+          title: '路由地址',
+          dataIndex: 'path',
+          customRender: text => (text == '' ? '-' : text)
+        },
+        {
+          title: '组件名称',
+          dataIndex: 'component',
+          customRender: text => (text == '' ? '-' : text)
         },
         {
           title: '图标',
@@ -102,6 +113,20 @@ export default {
           align: 'center'
         },
         {
+          title: '隐藏',
+          dataIndex: 'hidden',
+          width: '60px',
+          align: 'center',
+          customRender: text => (text == '1' ? '是' : '否')
+        },
+        {
+          title: '外链',
+          dataIndex: 'is_frame',
+          width: '60px',
+          align: 'center',
+          customRender: text => (text == '1' ? '是' : '否')
+        },
+        {
           title: '权限类型',
           dataIndex: 'type',
           width: '120px',
@@ -113,8 +138,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '160px',
-          align: 'right',
+          width: '155px',
+          align: 'center',
           scopedSlots: {
             customRender: 'action'
           }
@@ -181,24 +206,22 @@ export default {
 
     // 编辑权限事件
     handleEditRule(record) {
-      this.formModal.visible = true
-      this.formModal.model = {
-        id: record.id,
-        type: record.type.toString(),
-        route: record.route,
-        rule_name: record.rule_name,
-        icon: record.icon,
-        sort: record.sort
-      }
+      record.parent_id = record.parent_id == 0 ? null : record.parent_id.toString()
+      record.type = record.type.toString()
+      record.hidden = record.hidden.toString()
+      record.is_frame = record.is_frame.toString()
+      this.formModal.model = { ...record }
 
-      this.$refs.formModal.setParentId(record.parent_id == 0 ? null : record.parent_id)
+      this.formModal.visible = true
     },
 
     // 节点新增权限事件
     handleInsert(record) {
-      this.$refs.formModal.form.resetFields()
+      this.formModal.model = {
+        parent_id: record.id.toString()
+      }
+
       this.formModal.visible = true
-      this.$refs.formModal.setParentId(record.id)
     },
 
     // 表单编辑成功回调事件

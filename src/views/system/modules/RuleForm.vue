@@ -14,47 +14,58 @@
         <a-form-item v-show="false">
           <a-input v-decorator="['id']" />
         </a-form-item>
-        <a-form-item label="父级权限">
+        <a-form-item label="父级菜单">
           <a-tree-select
-            v-model="parent_id"
+            v-decorator="['parent_id']"
             :dropdown-style="{ maxHeight: '500px', overflow: 'auto' }"
-            placeholder="不选择默认为顶级栏目"
+            placeholder="默认为顶级栏目"
             allow-clear
             tree-default-expand-all
             :tree-data="tree"
-            :replaceFields="{ children: 'children', title: 'rule_name', key: 'key', value: 'id' }"
+            :replaceFields="{ children: 'children', title: 'title', key: 'key', value: 'id' }"
           >
           </a-tree-select>
         </a-form-item>
-        <a-form-item label="权限类型">
+        <a-form-item label="菜单类型">
           <a-radio-group v-decorator="['type', { rules: [{ required: true, message: '权限类型必选！' }] }]">
             <a-radio-button value="0">目录</a-radio-button>
             <a-radio-button value="1">菜单</a-radio-button>
             <a-radio-button value="2">权限</a-radio-button>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="权限名称">
+        <a-form-item label="菜单标题">
           <a-input
-            placeholder="请填写权限名称"
-            v-decorator="['rule_name', { rules: [{ required: true, message: '权限名称不能为空！' }] }]"
+            placeholder="请填写菜单标题"
+            v-decorator="['title', { rules: [{ required: true, message: '权限名称不能为空！' }] }]"
           />
         </a-form-item>
-        <a-form-item label="权限路由">
-          <a-input
-            placeholder="请填写权限路由"
-            v-decorator="['route', { rules: [{ required: true, message: '权限路由不能为空！' }] }]"
-            @keyup.native.enter="submit"
-          />
+        <a-form-item label="权限标识">
+          <a-input placeholder="请填写权限标识" v-decorator="['perms', { rules: [] }]" />
+        </a-form-item>
+        <a-form-item label="路由地址">
+          <a-input placeholder="请填写路由地址" v-decorator="['path', { rules: [] }]" />
         </a-form-item>
 
-        <a-form-item label="排序">
-          <a-input-number
-            placeholder="非必填(默认为0)"
-            v-decorator="['sort']"
-            :min="0"
-            :max="9999"
-            style="width:150px"
-          />
+        <a-form-item label="组件地址">
+          <a-input placeholder="请填写组件地址" v-decorator="['component', { rules: [] }]" />
+        </a-form-item>
+
+        <a-form-item label="是否隐藏">
+          <a-radio-group v-decorator="['hidden', { rules: [{ required: true, message: '是否隐藏必选！' }] }]">
+            <a-radio-button value="0">否</a-radio-button>
+            <a-radio-button value="1">是</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+
+        <a-form-item label="是否外链">
+          <a-radio-group v-decorator="['is_frame', { rules: [{ required: true, message: '是否外链必选！' }] }]">
+            <a-radio-button value="0">否</a-radio-button>
+            <a-radio-button value="1">是</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+
+        <a-form-item label="菜单排序">
+          <a-input-number placeholder="非必填项" v-decorator="['sort']" :min="0" :max="9999" style="width:100%" />
         </a-form-item>
 
         <a-form-item label="菜单图标">
@@ -79,7 +90,7 @@ import pick from 'lodash.pick'
 import { ServeCreatePerms, ServeEditPerms } from '@/api/rbac'
 
 // 表单字段
-const fields = ['id', 'type', 'route', 'rule_name', 'sort', 'icon']
+const fields = ['id', 'parent_id', 'type', 'title', 'path', 'component', 'perms', 'icon', 'sort', 'hidden', 'is_frame']
 
 export default {
   name: 'RuleForm',
@@ -118,7 +129,7 @@ export default {
         }
       },
       loading: false,
-      form: this.$form.createForm(this, { name: 'rule_from' }),
+      form: this.$form.createForm(this, { name: 'rule_from', onValuesChange(props, values) {} }),
       parent_id: undefined
     }
   },
@@ -137,9 +148,9 @@ export default {
       let _this = this
       this.form.validateFields((errors, values) => {
         if (!errors) {
-          values.parent_id = this.parent_id == undefined ? 0 : this.parent_id
+          values.parent_id = values.parent_id == undefined ? 0 : values.parent_id
           values.icon = values.icon == undefined ? '' : values.icon
-          values.sort = values.sort == undefined ? '' : values.sort
+          values.sort = values.sort == undefined ? '0' : values.sort
 
           if (values.id > 0) {
             _this.edit(values)
@@ -153,9 +164,6 @@ export default {
     },
     cancel() {
       this.$emit('cancel')
-    },
-    setParentId(parent_id) {
-      this.parent_id = parent_id
     },
     add(values) {
       ServeCreatePerms(values)

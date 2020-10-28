@@ -91,8 +91,18 @@ export default {
       this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
     }
   },
+
+  computed: {
+    ...mapState({
+      // 动态主路由
+      mainMenu: state => state.permission.addRouters
+    })
+  },
   created() {
-    const routes = asyncRouterMap.find(item => item.path === '/')
+    // const routes = asyncRouterMap.find(item => item.path === '/')
+    // this.menus = (routes && routes.children) || []
+
+    const routes = this.mainMenu.find(item => item.path === '/')
     this.menus = (routes && routes.children) || []
   },
   mounted() {

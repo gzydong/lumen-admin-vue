@@ -1,4 +1,5 @@
 import router from './router';
+import store from './store'
 import storage from 'store';
 import NProgress from 'nprogress';
 import '@/components/NProgress/nprogress.less';
@@ -29,6 +30,9 @@ const loginRoutePath = '/login';
 // 登录后默认跳转页面
 const defaultRoutePath = '/index';
 
+
+
+
 router.beforeEach((to, from, next) => {
   NProgress.start();
 
@@ -36,24 +40,30 @@ router.beforeEach((to, from, next) => {
 
   // 判断是否登录
   if (storage.get(ACCESS_TOKEN)) {
+    // 已登录且要跳转的页面是登录页
     if (to.path === loginRoutePath) {
       next(defaultRoutePath);
       NProgress.done();
     } else {
-      next();
+      if (store.getters.addRouters.length == 0) {
+        store.dispatch('GenerateRoutes').then(() => {
+          router.addRoutes(store.getters.addRouters)
+
+          console.log(store.getters.addRouters)
+
+          next();
+        })
+      } else {
+        next();
+      }
     }
   } else {
     // 在免登录名单，直接进入
     if (allowList.includes(to.name)) {
-      next()
+      next();
     } else {
-      next({
-        path: loginRoutePath,
-        query: {
-          redirect: to.fullPath
-        }
-      });
-
+      // 否则全部重定向到登录页
+      next(`${loginRoutePath}?redirect=${to.fullPath}`)
       NProgress.done();
     }
   }

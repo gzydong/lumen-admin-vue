@@ -79,7 +79,7 @@ import CreateForm from './modules/EditRoleFrom'
 import GiveRolePrems from './modules/GiveRolePrems'
 
 export default {
-  name: 'TableList',
+  name: 'SystemRolePage',
   components: {
     CreateForm,
     GiveRolePrems

@@ -4,7 +4,7 @@
     :width="550"
     :visible="visible"
     :confirmLoading="loading"
-    okText="立即添加"
+    :okText="model ? '立即编辑' : '立即添加'"
     cancelText="取消"
     @ok="ok"
     @cancel="cancel"
