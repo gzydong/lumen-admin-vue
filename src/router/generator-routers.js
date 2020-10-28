@@ -5,12 +5,13 @@ import {ServeGetMenus} from '@/api/auth'
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
 
 // 前端路由表
-const constantRouterComponents = {
+export const constantRouterComponents = {
   // 基础页面 layout 必须引入
   BasicLayout: BasicLayout,
   BlankLayout: BlankLayout,
   RouteView: RouteView,
   PageView: PageView,
+
   '403': () => import(/* webpackChunkName: "error" */ '@/views/exception/403'),
   '404': () => import(/* webpackChunkName: "error" */ '@/views/exception/404'),
   '500': () => import(/* webpackChunkName: "error" */ '@/views/exception/500'),
@@ -48,16 +49,18 @@ const rootRouter = {
 export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     ServeGetMenus().then(res => {
-      const menus = res.data.menus
-
-      const menuNav = []
-      rootRouter.children = filterAsyncRouter(menus)
-      menuNav.push(rootRouter)
-
-      let routers = menuNav
-      routers.push(notFoundRouter)
-
-      resolve(routers)
+      if(res.code == 200){
+        const menus = res.data.menus
+        const menuNav = []
+        rootRouter.children = filterAsyncRouter(menus)
+        menuNav.push(rootRouter)
+  
+        let routers = menuNav
+        routers.push(notFoundRouter)
+        resolve(routers)
+      }else{
+        resolve([])
+      }
     }).catch(err => {
       reject(err)
     })

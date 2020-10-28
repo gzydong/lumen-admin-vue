@@ -31,8 +31,6 @@ const loginRoutePath = '/login';
 const defaultRoutePath = '/index';
 
 
-
-
 router.beforeEach((to, from, next) => {
   NProgress.start();
 
@@ -48,10 +46,12 @@ router.beforeEach((to, from, next) => {
       if (store.getters.addRouters.length == 0) {
         store.dispatch('GenerateRoutes').then(() => {
           router.addRoutes(store.getters.addRouters)
-
-          console.log(store.getters.addRouters)
-
-          next();
+          const redirect = decodeURIComponent(from.query.redirect || to.path)
+          if (to.path === redirect) {
+            next({...to,replace: true})
+          } else {
+            next({path: redirect})
+          }
         })
       } else {
         next();

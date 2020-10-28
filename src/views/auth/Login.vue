@@ -143,10 +143,7 @@ export default {
       )
     },
     loginSuccess(res) {
-      this.$router.push({
-        path: decodeURIComponent(this.$route.query.redirect || '/index')
-      })
-
+      this.$router.push({ path: '/' })
       setTimeout(() => {
         this.$notification.success({
           message: '欢迎',
