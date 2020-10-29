@@ -80,9 +80,5 @@ export const constantRouterMap = [{
         },
       ]
     }]
-  },
-  {
-    path: '*',
-    component: () => import('@/views/exception/404'),
   }
 ];

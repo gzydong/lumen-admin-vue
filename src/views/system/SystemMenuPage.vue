@@ -117,14 +117,28 @@ export default {
           dataIndex: 'hidden',
           width: '60px',
           align: 'center',
-          customRender: text => (text == '1' ? (<a-button type="link" style="padding: 0;">是</a-button>) : '否')
+          customRender: text =>
+            text == '1' ? (
+              <a-button type="link" style="padding: 0;">
+                是
+              </a-button>
+            ) : (
+              '否'
+            )
         },
         {
           title: '外链',
           dataIndex: 'is_frame',
           width: '60px',
           align: 'center',
-          customRender: text => (text == '1' ? (<a-button type="link" style="padding: 0;">是</a-button>) : '否')
+          customRender: text =>
+            text == '1' ? (
+              <a-button type="link" style="padding: 0;">
+                是
+              </a-button>
+            ) : (
+              '否'
+            )
         },
         {
           title: '权限类型',

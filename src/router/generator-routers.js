@@ -9,7 +9,9 @@ import {
   RouteView
 } from '@/layouts'
 
-// 前端路由表
+/**
+ * 前端路由表
+ */
 export const constantRouterComponents = {
   // 基础页面 layout 必须引入
   BasicLayout: BasicLayout,
@@ -29,14 +31,18 @@ export const constantRouterComponents = {
   'component': () => import('@/views/other/component'),
 }
 
-// 前端未找到页面路由（固定不用改）
+/**
+ * 前端未找到页面路由（固定不用改）
+ */
 const notFoundRouter = {
   path: '*',
-  redirect: '/404',
+  component: () => import('@/views/exception/404'),
   hidden: true
 }
 
-// 根级菜单
+/**
+ * 根级菜单
+ */
 const rootRouter = {
   path: '/',
   name: '/',
@@ -67,7 +73,6 @@ export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     ServeGetMenus().then(res => {
       if (res.code == 200) {
-        let perms = res.data.perms
         rootRouter.children.push(...filterAsyncRouter(res.data.menus))
 
         const menuNav = []
@@ -77,7 +82,7 @@ export const generatorDynamicRouter = () => {
         routers.push(notFoundRouter)
         resolve({
           routers,
-          perms
+          perms: res.data.perms
         })
       } else {
         resolve({
@@ -95,14 +100,10 @@ export const generatorDynamicRouter = () => {
 function filterAsyncRouter(asyncRouterMap) {
   return asyncRouterMap.filter(route => {
     if (route.component) {
-      if (route.component === 'RouteView') {
-        route.component = RouteView
+      if (route.target) {
+        delete route.component
       } else {
-        if (route.target) {
-          delete route.component
-        } else {
-          route.component = constantRouterComponents[route.component]
-        }
+        route.component = constantRouterComponents[route.component]
       }
     }
 
@@ -114,6 +115,7 @@ function filterAsyncRouter(asyncRouterMap) {
   })
 }
 
-export const loadView = (view) => { // 路由懒加载
+// 路由懒加载
+export const loadView = (view) => {
   return (constantRouterComponents[view]) || (() => import(`@/views/${view}`))
 }
