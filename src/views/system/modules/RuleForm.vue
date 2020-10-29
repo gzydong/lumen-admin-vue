@@ -57,7 +57,7 @@
         <a-form-item label="菜单标题">
           <a-input
             placeholder="请填写菜单标题"
-            v-decorator="['title', { rules: [{ required: true, message: '权限名称不能为空！' }] }]"
+            v-decorator="['title', { rules: [{ required: true, message: '菜单标题不能为空！' }] }]"
           />
         </a-form-item>
 
