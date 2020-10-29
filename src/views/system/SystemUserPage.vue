@@ -60,13 +60,20 @@
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <a>编辑</a>
-          <a-divider type="vertical" />
+          <span v-action:system:user:edit>
+            <a>编辑</a>
+            <a-divider type="vertical" />
+          </span>
+
           <a-dropdown placement="bottomCenter" :trigger="['click']">
             <a-menu slot="overlay">
-              <a-menu-item @click="handleGiveAdminRole(record)"><a>分配权限</a></a-menu-item>
-              <a-menu-item @click="handleResetPassword(record)"><a>设置密码</a></a-menu-item>
-              <a-menu-item @click="deleteConfirm(record)"><a>删除账号</a></a-menu-item>
+              <a-menu-item @click="handleGiveAdminRole(record)" v-action:system:user:give-role
+                ><a>分配权限</a></a-menu-item
+              >
+              <a-menu-item @click="handleResetPassword(record)" v-action:system:user:change-password
+                ><a>设置密码</a></a-menu-item
+              >
+              <a-menu-item @click="deleteConfirm(record)" v-action:system:user:delete><a>删除账号</a></a-menu-item>
             </a-menu>
             <a>更多<a-icon type="down"/></a>
           </a-dropdown>

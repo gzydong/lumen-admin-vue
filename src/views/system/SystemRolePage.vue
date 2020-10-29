@@ -43,13 +43,11 @@
         :scroll="{ x: 1200 }"
       >
         <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleEditRole(record)">编辑</a>
-            <a-divider type="vertical" />
-            <a @click="handleRolePrems(record)">分配权限</a>
-            <a-divider type="vertical" />
-            <a @click="deleteConfirm(record)">删除</a>
-          </template>
+          <a v-action:system:role:edit @click="handleEditRole(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a v-action:system:role:give-perms @click="handleRolePrems(record)">分配权限</a>
+          <a-divider type="vertical" />
+          <a v-action:system:role:delete @click="deleteConfirm(record)">删除</a>
         </span>
       </s-table>
 

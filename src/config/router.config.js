@@ -8,7 +8,7 @@ const RouteView = {
 }
 
 /**
- *  菜单路由
+ *  异步路由
  */
 export const asyncRouterMap = [{
   path: '/',
@@ -19,59 +19,15 @@ export const asyncRouterMap = [{
     title: '主页',
   },
   children: [{
-      path: '/index',
-      name: 'index',
-      component: () => import('@/views/dashboard/Analysis'),
-      meta: {
-        icon: 'fund',
-        title: '控制台',
-        keepAlive: false,
-      }
-    },
-    {
-      path: '/system',
-      component: RouteView,
-      meta: {
-        title: '权限管理',
-        keepAlive: true,
-        icon: 'solution',
-      },
-      children: [{
-        path: '/system/users',
-        name: 'system-users',
-        component: () => import('@/views/system/SystemUserPage'),
-        meta: {
-          title: '管理人员',
-          keepAlive: false,
-        }
-      }, {
-        path: '/system/roles',
-        name: 'system-roles',
-        component: () => import('@/views/system/SystemRolePage'),
-        meta: {
-          title: '角色管理',
-          keepAlive: false
-        }
-      }, {
-        path: '/system/menus',
-        name: 'system-menus',
-        component: () => import('@/views/system/SystemMenuPage'),
-        meta: {
-          title: '菜单管理',
-          keepAlive: false,
-        }
-      }]
-    },
-    {
-      path: '/other',
-      name: 'component',
-      component: () => import('@/views/other/component'),
-      meta: {
-        icon: 'tool',
-        title: '自定义组件',
-      }
+    path: '/index',
+    name: 'index',
+    component: () => import('@/views/dashboard/Analysis'),
+    meta: {
+      icon: 'fund',
+      title: '控制台',
+      keepAlive: false,
     }
-  ]
+  }]
 }];
 
 /**
@@ -127,9 +83,6 @@ export const constantRouterMap = [{
   },
   {
     path: '*',
-    meta: {
-      title: '404页面不存在'
-    },
     component: () => import('@/views/exception/404'),
   }
 ];

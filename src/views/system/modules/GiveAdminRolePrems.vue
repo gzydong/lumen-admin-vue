@@ -120,7 +120,7 @@ export default {
       this.loading = true
       ServeGiveAdminPerms({
         admin_id: values.admin_id,
-        role_id: values.role_id,
+        role_id: values.role_id || 0,
         permissions
       })
         .then(res => {

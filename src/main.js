@@ -33,6 +33,24 @@ Vue.component('s-table', STable);
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme;
 
+
+
+
+Vue.directive('action', {
+  inserted: function (el, binding, vnode) {
+    const {
+      arg
+    } = binding
+
+    if (store.getters.perms.findIndex((value) => {
+        return value == arg
+      }) == -1) {
+      el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+    }
+  }
+})
+
+
 new Vue({
   router,
   store,

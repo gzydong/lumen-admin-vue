@@ -66,7 +66,7 @@
             placeholder="请填写权限标识"
             v-decorator="[
               'perms',
-              { rules: [{ required: form.getFieldValue('type') == 2, message: '请填写权限标识' }] },
+              { rules: [{ required: form.getFieldValue('type') == 2, message: '请填写权限标识' }] }
             ]"
           />
         </a-form-item>
@@ -76,7 +76,7 @@
             placeholder="请填写路由地址"
             v-decorator="[
               'path',
-              { rules: [{ required: form.getFieldValue('type') != 2, message: '请填写路由地址' }] },
+              { rules: [{ required: form.getFieldValue('type') != 2, message: '请填写路由地址' }] }
             ]"
           />
         </a-form-item>
@@ -91,10 +91,10 @@
                 rules: [
                   {
                     required: form.getFieldValue('type') == 1 && form.getFieldValue('is_frame') == 0,
-                    message: '请选择组件地址',
-                  },
-                ],
-              },
+                    message: '请选择组件地址'
+                  }
+                ]
+              }
             ]"
           >
             <a-select-option v-for="(router, idx) in routers" :key="idx">
@@ -140,57 +140,54 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true,
+      required: true
     },
     model: {
       type: Object,
-      default: null,
+      default: null
     },
     tree: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
   data() {
     return {
       formLayout: {
         labelCol: {
           xs: {
-            span: 24,
+            span: 24
           },
           sm: {
-            span: 7,
-          },
+            span: 7
+          }
         },
         wrapperCol: {
           xs: {
-            span: 24,
+            span: 24
           },
           sm: {
-            span: 13,
-          },
-        },
+            span: 13
+          }
+        }
       },
       loading: false,
       form: this.$form.createForm(this, { name: 'rule_from', onValuesChange(props, values) {} }),
-      parent_id: undefined,
-      routers: constantRouterComponents,
+      routers: constantRouterComponents
     }
   },
   watch: {
     model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-    },
+    }
   },
   created() {
     // 防止表单未注册
-    fields.forEach((v) => this.form.getFieldDecorator(v))
+    fields.forEach(v => this.form.getFieldDecorator(v))
   },
   methods: {
     submit(e) {
       e.preventDefault()
-      this.loading = true
-      let _this = this
       this.form.validateFields((errors, values) => {
         if (!errors) {
           values.parent_id = values.parent_id == undefined ? 0 : values.parent_id
@@ -200,10 +197,11 @@ export default {
           values.perms = values.perms == undefined ? '' : values.perms
           values.path = values.path == undefined ? '' : values.path
 
+          this.loading = true
           if (values.id > 0) {
-            _this.edit(values)
+            this.edit(values)
           } else {
-            _this.add(values)
+            this.add(values)
           }
         } else {
           this.loading = false
@@ -215,8 +213,7 @@ export default {
     },
     add(values) {
       ServeCreatePerms(values)
-        .then((res) => {
-          this.loading = false
+        .then(res => {
           if (res.code == 200) {
             this.$message.success('菜单添加成功...')
             this.$emit('success')
@@ -224,15 +221,16 @@ export default {
             this.$message.info('菜单添加失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
+        })
+        .finally(() => {
           this.loading = false
         })
     },
     edit(values) {
       ServeEditPerms(values)
-        .then((res) => {
-          this.loading = false
+        .then(res => {
           if (res.code == 200) {
             this.$message.success('菜单编辑成功...')
             this.$emit('success')
@@ -240,11 +238,13 @@ export default {
             this.$message.info('菜单编辑失败...')
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error('网络异常,请稍后再试...')
+        })
+        .finally(() => {
           this.loading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

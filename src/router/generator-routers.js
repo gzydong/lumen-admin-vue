@@ -1,8 +1,13 @@
-// eslint-disable-next-line
-import {ServeGetMenus} from '@/api/auth'
+import {
+  ServeGetMenus
+} from '@/api/auth'
 
-// eslint-disable-next-line
-import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
+import {
+  BasicLayout,
+  BlankLayout,
+  PageView,
+  RouteView
+} from '@/layouts'
 
 // 前端路由表
 export const constantRouterComponents = {
@@ -12,33 +17,45 @@ export const constantRouterComponents = {
   RouteView: RouteView,
   PageView: PageView,
 
-  '403': () => import(/* webpackChunkName: "error" */ '@/views/exception/403'),
-  '404': () => import(/* webpackChunkName: "error" */ '@/views/exception/404'),
-  '500': () => import(/* webpackChunkName: "error" */ '@/views/exception/500'),
+  '403': () => import('@/views/exception/403'),
+  '404': () => import('@/views/exception/404'),
+  '500': () => import('@/views/exception/500'),
 
-  'Analysis': () => import(/* webpackChunkName: "error" */ '@/views/dashboard/Analysis'),
-  'SystemMenuPage': () => import(/* webpackChunkName: "error" */ '@/views/system/SystemMenuPage'),
-  'SystemRolePage': () => import(/* webpackChunkName: "error" */ '@/views/system/SystemRolePage'),
-  'SystemUserPage': () => import(/* webpackChunkName: "error" */ '@/views/system/SystemUserPage'),
+  'Analysis': () => import('@/views/dashboard/Analysis'),
+  'SystemMenuPage': () => import('@/views/system/SystemMenuPage'),
+  'SystemRolePage': () => import('@/views/system/SystemRolePage'),
+  'SystemUserPage': () => import('@/views/system/SystemUserPage'),
 
-  'component':() => import('@/views/other/component'),
+  'component': () => import('@/views/other/component'),
 }
 
 // 前端未找到页面路由（固定不用改）
 const notFoundRouter = {
-  path: '*', redirect: '/404', hidden: true
+  path: '*',
+  redirect: '/404',
+  hidden: true
 }
 
 // 根级菜单
 const rootRouter = {
-  name: 'app',
   path: '/',
+  name: '/',
   component: BasicLayout,
   redirect: '/index',
   meta: {
-    title: '首页'
+    title: '控制台',
+    keepAlive: false,
   },
-  children: []
+  children: [{
+    path: '/index',
+    name: 'index',
+    component: () => import('@/views/dashboard/Analysis'),
+    meta: {
+      icon: 'fund',
+      title: '控制台',
+      keepAlive: false,
+    }
+  }]
 }
 
 /**
@@ -49,17 +66,24 @@ const rootRouter = {
 export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     ServeGetMenus().then(res => {
-      if(res.code == 200){
-        const menus = res.data.menus
+      if (res.code == 200) {
+        let perms = res.data.perms
+        rootRouter.children.push(...filterAsyncRouter(res.data.menus))
+
         const menuNav = []
-        rootRouter.children = filterAsyncRouter(menus)
         menuNav.push(rootRouter)
-  
         let routers = menuNav
+
         routers.push(notFoundRouter)
-        resolve(routers)
-      }else{
-        resolve([])
+        resolve({
+          routers,
+          perms
+        })
+      } else {
+        resolve({
+          routers: [],
+          perms: []
+        })
       }
     }).catch(err => {
       reject(err)
@@ -74,18 +98,18 @@ function filterAsyncRouter(asyncRouterMap) {
       if (route.component === 'RouteView') {
         route.component = RouteView
       } else {
-        if(route.target){
+        if (route.target) {
           delete route.component
-
-
-        }else{
+        } else {
           route.component = constantRouterComponents[route.component]
-        }        
+        }
       }
     }
+
     if (route.children != null && route.children && route.children.length) {
       route.children = filterAsyncRouter(route.children)
     }
+
     return true
   })
 }
