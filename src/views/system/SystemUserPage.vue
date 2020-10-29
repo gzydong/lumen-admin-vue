@@ -75,7 +75,7 @@
               >
               <a-menu-item @click="deleteConfirm(record)" v-action:system:user:delete><a>删除账号</a></a-menu-item>
             </a-menu>
-            <a>更多<a-icon type="down"/></a>
+            <a>更多 <a-icon type="down"/></a>
           </a-dropdown>
         </span>
       </s-table>

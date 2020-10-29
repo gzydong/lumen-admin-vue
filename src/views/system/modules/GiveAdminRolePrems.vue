@@ -43,7 +43,6 @@
 <script>
 import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms, ServeGetAdminPerms, ServeGiveAdminPerms } from '@/api/rbac'
-
 import { formatTree, uniqueArr } from '@/utils/util'
 
 // 表单字段

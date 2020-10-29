@@ -36,8 +36,8 @@
 <script>
 import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms } from '@/api/rbac'
-
 import { formatTree, uniqueArr } from '@/utils/util'
+
 // 表单字段
 const fields = ['id', 'display_name']
 

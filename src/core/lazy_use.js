@@ -45,7 +45,8 @@ import {
   Descriptions,
   message,
   notification,
-  Tree
+  Tree,
+  TreeSelect
 } from 'ant-design-vue'
 
 // ext library
@@ -96,6 +97,7 @@ Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Tree)
+Vue.use(TreeSelect)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
