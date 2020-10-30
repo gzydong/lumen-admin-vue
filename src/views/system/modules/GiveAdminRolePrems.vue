@@ -32,6 +32,7 @@
               :blockNode="true"
               :checkStrictly="false"
               @check="onCheck"
+              :replaceFields="{ children: 'children', title: 'title', key: 'id', value: 'id' }"
             />
           </div>
         </a-form-item>
@@ -43,7 +44,8 @@
 <script>
 import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms, ServeGetAdminPerms, ServeGiveAdminPerms } from '@/api/rbac'
-import { formatTree, uniqueArr } from '@/utils/util'
+import { formatTree, uniqueArr, getTreePids } from '@/utils/util'
+import { forEach } from 'store/storages/all'
 
 // 表单字段
 const fields = ['admin_id', 'admin_name', 'role_id']
@@ -85,9 +87,7 @@ export default {
       checkedKeys: [],
       halfCheckedKeys: [],
       treeData: [],
-      pids: [],
-      roles: [],
-      roleValue: 0
+      roles: []
     }
   },
   watch: {
@@ -154,26 +154,15 @@ export default {
         admin_id: this.model.admin_id
       }).then(res => {
         if (res.code == 200) {
-          let result = res.data
-          let prems = result.perms
+          const { admin_perms, perms, role_id, roles } = res.data
+          let pids = uniqueArr(getTreePids(perms))
 
-          let admin_perms = result.admin_perms
-          this.treeData = formatTree(prems)
-
-          this.roles = result.roles
-          if (result.role_id > 0) {
-            this.form.setFieldsValue({
-              role_id: result.role_id
-            })
-          }
-
-          prems.forEach(value => {
-            if (value.pid > 0) {
-              this.pids.push(value.pid)
-            }
+          this.treeData = perms // tree 赋值
+          this.roles = roles // 角色赋值
+          this.form.setFieldsValue({
+            role_id: role_id || undefined
           })
 
-          let pids = uniqueArr(this.pids)
           admin_perms.forEach(val => {
             if (pids.indexOf(val) >= 0) {
               this.halfCheckedKeys.push(val)

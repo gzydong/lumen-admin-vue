@@ -25,6 +25,7 @@
               :blockNode="true"
               :checkStrictly="false"
               @check="onCheck"
+              :replaceFields="{ children: 'children', title: 'title', key: 'id', value: 'id' }"
             />
           </div>
         </a-form-item>
@@ -36,7 +37,7 @@
 <script>
 import pick from 'lodash.pick'
 import { ServeGetRolePerms, ServeGiveRolePerms } from '@/api/rbac'
-import { formatTree, uniqueArr } from '@/utils/util'
+import { formatTree, uniqueArr, getTreePids } from '@/utils/util'
 
 // 表单字段
 const fields = ['id', 'display_name']
@@ -77,39 +78,14 @@ export default {
       form: this.$form.createForm(this),
       checkedKeys: [],
       halfCheckedKeys: [],
-      treeData: [],
-      pids: []
+      treeData: []
     }
   },
   watch: {
     model() {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
-
       this.resetTree()
-      ServeGetRolePerms({
-        role_id: this.model.id
-      }).then(res => {
-        if (res.code == 200) {
-          let prems = res.data.permissions
-          let role_perms = res.data.role_perms
-          this.treeData = formatTree(prems)
-
-          prems.forEach(value => {
-            if (value.pid > 0) {
-              this.pids.push(value.pid)
-            }
-          })
-
-          let pids = uniqueArr(this.pids)
-          role_perms.forEach(val => {
-            if (pids.indexOf(val) >= 0) {
-              this.halfCheckedKeys.push(val)
-            } else {
-              this.checkedKeys.push(val)
-            }
-          })
-        }
-      })
+      this.loadTree()
     }
   },
   created() {
@@ -157,6 +133,25 @@ export default {
     },
     onCheck(checkedKeys, info) {
       this.halfCheckedKeys = info.halfCheckedKeys
+    },
+    loadTree() {
+      ServeGetRolePerms({
+        role_id: this.model.id
+      }).then(res => {
+        if (res.code == 200) {
+          const { permissions, role_perms } = res.data
+          let pids = uniqueArr(getTreePids(permissions))
+
+          this.treeData = permissions
+          role_perms.forEach(val => {
+            if (pids.indexOf(val) >= 0) {
+              this.halfCheckedKeys.push(val)
+            } else {
+              this.checkedKeys.push(val)
+            }
+          })
+        }
+      })
     }
   }
 }

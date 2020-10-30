@@ -73,12 +73,9 @@ export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     ServeGetMenus().then(res => {
       if (res.code == 200) {
+        const routers = []
         rootRouter.children.push(...filterAsyncRouter(res.data.menus))
-
-        const menuNav = []
-        menuNav.push(rootRouter)
-        let routers = menuNav
-
+        routers.push(rootRouter)
         routers.push(notFoundRouter)
         resolve({
           routers,

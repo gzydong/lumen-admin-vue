@@ -33,23 +33,16 @@ Vue.component('s-table', STable);
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme;
 
-
-
-
+// 权限指令
 Vue.directive('action', {
   inserted: function (el, binding, vnode) {
-    const {
-      arg
-    } = binding
 
-    if (store.getters.perms.findIndex((value) => {
-        return value == arg
-      }) == -1) {
+    // 检测是否有权限
+    if (!store.getters.perms.some(perm => perm == binding.arg)) {
       el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
     }
   }
-})
-
+});
 
 new Vue({
   router,

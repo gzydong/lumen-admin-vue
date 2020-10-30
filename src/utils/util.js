@@ -88,6 +88,26 @@ export function formatTree(data) {
   return tree
 }
 
+/**
+ * 递归获取Tree所有父节点
+ * 
+ * @param {*} perms 
+ */
+export const getTreePids = (perms) => {
+  let arr = []
+  perms.forEach(perm => {
+    if (perm.parent_id > 0) {
+      arr.push(perm.parent_id)
+    }
+
+    if (perm.children) {
+      arr.push(...getTreePids(perm.children))
+    }
+  })
+
+  return arr
+}
+
 
 /**
  * 数组去重
